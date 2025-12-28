@@ -90,30 +90,30 @@ public class FacuController {
             }
         });
         view.btnEditFacu.addActionListener(e -> {
-            int selectedRow = view.table.getSelectedRow();
-            if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(view, "Chọn khoa muốn xóa trên bảng!");
+            String id = view.txtFacuId.getText().trim();
+            String name = view.txtFacuName.getText().trim();
+
+            if (id.isEmpty() || name.isEmpty()) {
+                JOptionPane.showMessageDialog(view, "Chưa nhập đầy đủ thông tin");
                 return;
             }
 
-            String id = view.table.getValueAt(selectedRow, 0).toString();
-            Faculties facu = new Faculties(id, null);
+            Faculties facu = new Faculties(id, name);
 
             try {
-                int row = dao.update(facu);
+                int row = dao.update(facu); // dao là instance FacuDAO
                 if (row > 0) {
-                    JOptionPane.showMessageDialog(view, "Xóa thành công");
-                    loadTable();
-                    view.txtFacuName.setText("");
-                    view.txtFacuId.setText("");
+                    loadTable(); // reload JTable sau khi cập nhật
+                    JOptionPane.showMessageDialog(view, "Cập nhật thành công");
                 } else {
-                    JOptionPane.showMessageDialog(view, "Cập nhật thất bại");
+                    JOptionPane.showMessageDialog(view, "Không tìm thấy khoa để cập nhật");
                 }
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(view, ex.getMessage());
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(view, "Cập nhật thất bại: " + ex.getMessage());
             }
-
         });
+
     }
 
     private void onRowSelected() {
