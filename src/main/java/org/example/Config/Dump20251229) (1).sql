@@ -18,6 +18,31 @@ USE `qlhssv`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `account`
+--
+
+DROP TABLE IF EXISTS `account`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `account` (
+  `username` varchar(30) NOT NULL,
+  `password` varchar(45) NOT NULL,
+  `fullname` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  PRIMARY KEY (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `account`
+--
+
+LOCK TABLES `account` WRITE;
+/*!40000 ALTER TABLE `account` DISABLE KEYS */;
+INSERT INTO `account` VALUES ('anhdth','admin','Đỗ Thái Hải Anh'),('anhnv','admin','Nguyễn Văn Anh'),('baodg','admin','Đinh Gia Bảo'),('ducpa','admin','Phạm Anh Đức'),('truongpm','admin','Phùng Minh Trường');
+/*!40000 ALTER TABLE `account` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `class`
 --
 
@@ -42,7 +67,7 @@ CREATE TABLE `class` (
 
 LOCK TABLES `class` WRITE;
 /*!40000 ALTER TABLE `class` DISABLE KEYS */;
-INSERT INTO `class` VALUES ('RM1','Rau má 1','RM',1),('RM2','Rau má 2','RM',1),('RM3','Rau má 3','RM',1),('RM4','Rau má 4','RM',1);
+INSERT INTO `class` VALUES ('HT21','74DCHT21','HT',74),('LG21','74DCLG21','LG',74),('RM1','Rau má 1','RM',1),('RM2','Rau má 2','RM',1),('RM3','Rau má 3','RM',1),('RM4','Rau má 4','RM',1);
 /*!40000 ALTER TABLE `class` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -154,7 +179,7 @@ CREATE TABLE `reward` (
 
 LOCK TABLES `reward` WRITE;
 /*!40000 ALTER TABLE `reward` DISABLE KEYS */;
-INSERT INTO `reward` VALUES (2,'74DCHT22041','2025-12-28','Đẹp trai','129'),(4,'1211','2025-12-28','2112','2124');
+INSERT INTO `reward` VALUES (2,'74DCHT22041','2025-12-28','Đẹp trai','129');
 /*!40000 ALTER TABLE `reward` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -192,7 +217,7 @@ CREATE TABLE `student` (
 
 LOCK TABLES `student` WRITE;
 /*!40000 ALTER TABLE `student` DISABLE KEYS */;
-INSERT INTO `student` VALUES ('1','1','1','2025-12-11','Nam','1','1','1','1','RM4','Đang theo học'),('1211','12122','21212','2025-12-18','Nữ','12122','3123123','3123123','2231231223','RM1','Đang theo học'),('12121','121212','1212','2025-12-11','Nam','212','12121','1212','1212','RM1','Bị đình chỉ'),('453455','453453','3453','2025-12-10','Nam','45345','34534','45345','534534','RM2','Buộc thôi học'),('74DCHT22041','Phạm Anh','Đức','2005-01-30','Nam','Thái Bình','0962819282','duc74dcht22041@st.utt.edu.vn','034205006846','RM2','Đang theo học');
+INSERT INTO `student` VALUES ('1211','12122','21212','2025-12-18','Nữ','12122','3123123','3123123','2231231223','RM1','Đang theo học'),('12121','121212','1212','2025-12-11','Nam','212','12121','1212','1212','RM1','Bị đình chỉ'),('453455','453453','3453','2025-12-10','Nam','45345','34534','45345','534534','RM2','Buộc thôi học'),('74DCHT22041','Phạm Anh','Đức','2005-01-30','Nam','Thái Bình','0962819282','duc74dcht22041@st.utt.edu.vn','034205006846','HT21','Đang theo học');
 /*!40000 ALTER TABLE `student` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -205,4 +230,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-12-29  0:22:35
+-- Dump completed on 2025-12-29  3:04:48

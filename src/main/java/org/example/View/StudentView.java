@@ -15,5 +15,7 @@ public class StudentView extends JPanel {
         lblTitle.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 
         add(lblTitle, BorderLayout.NORTH);
+
+
     }
 }
