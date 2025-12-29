@@ -1,8 +1,11 @@
 package org.example.View;
 
+import com.toedter.calendar.JDateChooser;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.Date;
 
 public class RewardView extends JPanel {
 
@@ -10,21 +13,22 @@ public class RewardView extends JPanel {
         initUI();
     }
 
-    // ===== FORM COMPONENTS =====
-    public JTextField txtRewardId, txtRewardDate, txtRewardQuyetDinh;
+    ///  form
+    public JTextField txtRewardId, txtRewardQuyetDinh;
     public JComboBox<String> cboStudentId;
     public JTextArea txtRewardNote;
+
+    public JDateChooser dcRewardDate;
 
     public JLabel lblRewardId, lblStudentId, lblRewardDate, lblRewardNote, lblRewardQuyetDinh;
 
     public JButton btnAddReward, btnDeleteReward, btnEditReward, btnBack;
 
-    // ===== TABLE =====
+    // bảng
     public DefaultTableModel model;
     public JScrollPane scrollPane;
     public JTable table;
 
-    // giữ panel table để add đúng chỗ
     private JPanel tablePanel;
 
     private void initUI() {
@@ -35,7 +39,6 @@ public class RewardView extends JPanel {
         lblTitle.setFont(new Font("Segoe UI", Font.PLAIN, 20));
         add(lblTitle, BorderLayout.NORTH);
 
-        // ✅ tạo 1 panel giữa để chứa form + table (form trên, table dưới)
         JPanel center = new JPanel(new BorderLayout());
         center.add(formInfoInit(), BorderLayout.NORTH);
 
@@ -52,14 +55,11 @@ public class RewardView extends JPanel {
         lblInfoTitle.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         lblInfoTitle.setBorder(BorderFactory.createEmptyBorder(10, 30, 0, 30));
         container.add(lblInfoTitle, BorderLayout.NORTH);
-
         JPanel form = new JPanel();
         GroupLayout layout = new GroupLayout(form);
         form.setLayout(layout);
-
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
-
         lblRewardId = new JLabel("Reward ID");
         txtRewardId = new JTextField();
         txtRewardId.setEnabled(false);
@@ -67,8 +67,10 @@ public class RewardView extends JPanel {
         lblStudentId = new JLabel("Mã sinh viên");
         cboStudentId = new JComboBox<>();
 
-        lblRewardDate = new JLabel("Ngày (yyyy-MM-dd)");
-        txtRewardDate = new JTextField();
+        lblRewardDate = new JLabel("Ngày");
+        dcRewardDate = new JDateChooser();
+        dcRewardDate.setDateFormatString("yyyy-MM-dd");
+        dcRewardDate.setDate(new Date());
 
         lblRewardQuyetDinh = new JLabel("Quyết định");
         txtRewardQuyetDinh = new JTextField();
@@ -97,7 +99,7 @@ public class RewardView extends JPanel {
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                 .addComponent(txtRewardId)
                                 .addComponent(cboStudentId)
-                                .addComponent(txtRewardDate)
+                                .addComponent(dcRewardDate)
                                 .addComponent(txtRewardQuyetDinh)
                                 .addComponent(noteScroll)
                                 .addGroup(GroupLayout.Alignment.CENTER, layout.createSequentialGroup()
@@ -122,7 +124,7 @@ public class RewardView extends JPanel {
                         )
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(lblRewardDate)
-                                .addComponent(txtRewardDate)
+                                .addComponent(dcRewardDate)
                         )
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(lblRewardQuyetDinh)
@@ -148,7 +150,6 @@ public class RewardView extends JPanel {
         model = new DefaultTableModel(
                 new String[]{"Reward ID", "Mã SV", "Ngày", "Lý do", "Quyết định"}, 0
         );
-
         table = new JTable(model);
         table.setFillsViewportHeight(true);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);

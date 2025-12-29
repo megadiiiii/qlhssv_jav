@@ -6,12 +6,9 @@ import org.example.View.RewardView;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
 import java.sql.Date;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.util.List;
+import java.sql.SQLException;
+import java.util.Objects;
 
 public class RewardController {
 
@@ -22,26 +19,23 @@ public class RewardController {
         this.view = view;
         this.dao = new RewardDAO();
 
-        initComboStudent();
+        loadStudentCombo();
         loadTable();
-        bindEvents();
+        addEvents();
         clearForm();
     }
 
-    private void initComboStudent() {
-        List<String> ids = dao.getStudentIds();
+    private void loadStudentCombo() {
         view.cboStudentId.removeAllItems();
-        for (String id : ids) {
+        for (String id : dao.getStudentIds()) {
             view.cboStudentId.addItem(id);
         }
     }
 
     private void loadTable() {
-        DefaultTableModel model = view.model;
-        model.setRowCount(0);
-
+        view.model.setRowCount(0);
         for (Reward r : dao.findAll()) {
-            model.addRow(new Object[]{
+            view.model.addRow(new Object[]{
                     r.getRewardId(),
                     r.getStudentId(),
                     r.getRewardDate(),
@@ -51,146 +45,122 @@ public class RewardController {
         }
     }
 
-    private void bindEvents() {
-        view.btnAddReward.addActionListener(e -> onAdd());
-        view.btnEditReward.addActionListener(e -> onEdit());
-        view.btnDeleteReward.addActionListener(e -> onDelete());
-        view.btnBack.addActionListener(e -> onBack());
+    private void addEvents() {
+        view.btnAddReward.addActionListener(e -> addReward());
+        view.btnEditReward.addActionListener(e -> editReward());
+        view.btnDeleteReward.addActionListener(e -> deleteReward());
 
-        view.table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (e.getValueIsAdjusting()) return;
-                onRowClick();
-            }
+        view.table.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            if (e.getValueIsAdjusting()) return;
+            fillForm();
         });
     }
 
-    private void onAdd() {
+    private void addReward() {
         Reward r = readForm(false);
         if (r == null) return;
 
-        if (dao.insert(r)) {
-            JOptionPane.showMessageDialog(view, "Thêm khen thưởng thành công!");
+        try {
+            dao.insert(r);
             loadTable();
             clearForm();
-        } else {
-            JOptionPane.showMessageDialog(view, "Thêm thất bại!");
+            JOptionPane.showMessageDialog(view, "Thêm khen thưởng thành công!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(view, "Lỗi thêm dữ liệu!");
         }
     }
 
-    private void onEdit() {
+    private void editReward() {
         Reward r = readForm(true);
         if (r == null) return;
 
-        if (dao.update(r)) {
-            JOptionPane.showMessageDialog(view, "Cập nhật thành công!");
-            loadTable();
-            clearForm();
-        } else {
-            JOptionPane.showMessageDialog(view, "Cập nhật thất bại!");
+        try {
+            if (dao.update(r) > 0) {
+                loadTable();
+                clearForm();
+                JOptionPane.showMessageDialog(view, "Sửa thành công!");
+            } else {
+                JOptionPane.showMessageDialog(view, "Không có dòng nào được sửa!");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(view, "Lỗi sửa dữ liệu!");
         }
     }
 
-    private void onDelete() {
+    private void deleteReward() {
         String idText = view.txtRewardId.getText().trim();
         if (idText.isEmpty()) {
-            JOptionPane.showMessageDialog(view, "Chọn 1 dòng để xóa!");
+            JOptionPane.showMessageDialog(view, "Chọn dòng để xóa!");
             return;
         }
 
         int confirm = JOptionPane.showConfirmDialog(view, "Xóa khen thưởng này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
         if (confirm != JOptionPane.YES_OPTION) return;
 
-        int rewardId = Integer.parseInt(idText);
-        if (dao.delete(rewardId)) {
-            JOptionPane.showMessageDialog(view, "Xóa thành công!");
-            loadTable();
-            clearForm();
-        } else {
-            JOptionPane.showMessageDialog(view, "Xóa thất bại!");
+        try {
+            Reward r = new Reward();
+            r.setRewardId(Integer.parseInt(idText));
+
+            if (dao.delete(r) > 0) {
+                loadTable();
+                clearForm();
+                JOptionPane.showMessageDialog(view, "Xóa thành công!");
+            } else {
+                JOptionPane.showMessageDialog(view, "Không có dòng nào bị xóa!");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(view, "Lỗi xóa dữ liệu!");
         }
     }
 
-    private void onRowClick() {
+    private void fillForm() {
         int row = view.table.getSelectedRow();
         if (row < 0) return;
-
-        Object rewardId = view.model.getValueAt(row, 0);
-        Object studentId = view.model.getValueAt(row, 1);
-        Object rewardDate = view.model.getValueAt(row, 2);
-        Object note = view.model.getValueAt(row, 3);
-        Object qd = view.model.getValueAt(row, 4);
-
-        view.txtRewardId.setText(String.valueOf(rewardId));
-        view.cboStudentId.setSelectedItem(String.valueOf(studentId));
-        view.txtRewardDate.setText(String.valueOf(rewardDate));
-        view.txtRewardNote.setText(note == null ? "" : String.valueOf(note));
-        view.txtRewardQuyetDinh.setText(qd == null ? "" : String.valueOf(qd));
+        view.txtRewardId.setText(Objects.toString(view.model.getValueAt(row, 0), ""));
+        view.cboStudentId.setSelectedItem(Objects.toString(view.model.getValueAt(row, 1), ""));
+        Object dateObj = view.model.getValueAt(row, 2);
+        if (dateObj instanceof java.sql.Date) {
+            view.dcRewardDate.setDate(new java.util.Date(((java.sql.Date) dateObj).getTime()));
+        }
+        view.txtRewardNote.setText(Objects.toString(view.model.getValueAt(row, 3), ""));
+        view.txtRewardQuyetDinh.setText(Objects.toString(view.model.getValueAt(row, 4), ""));
     }
-
-    private void clearForm() {
-        view.txtRewardId.setText("");
-        if (view.cboStudentId.getItemCount() > 0) view.cboStudentId.setSelectedIndex(0);
-
-        view.txtRewardDate.setText(LocalDate.now().toString());
-        view.txtRewardNote.setText("");
-        view.txtRewardQuyetDinh.setText("");
-
-        view.table.clearSelection();
-    }
-
     private Reward readForm(boolean requireId) {
-        String idText = view.txtRewardId.getText().trim();
+        if (requireId && view.txtRewardId.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(view, "Chọn dòng để sửa!");
+            return null;
+        }
         String studentId = (String) view.cboStudentId.getSelectedItem();
-        String dateText = view.txtRewardDate.getText().trim();
-        String note = view.txtRewardNote.getText().trim();
-        String qd = view.txtRewardQuyetDinh.getText().trim();
-
         if (studentId == null || studentId.isEmpty()) {
             JOptionPane.showMessageDialog(view, "Chưa có mã sinh viên!");
             return null;
         }
-        if (dateText.isEmpty()) {
-            JOptionPane.showMessageDialog(view, "Ngày không được để trống (yyyy-MM-dd)!");
+        if (view.dcRewardDate.getDate() == null) {
+            JOptionPane.showMessageDialog(view, "Chọn ngày khen thưởng!");
             return null;
         }
+        String qd = view.txtRewardQuyetDinh.getText().trim();
         if (qd.isEmpty()) {
             JOptionPane.showMessageDialog(view, "Quyết định không được để trống!");
             return null;
         }
-
-        Date sqlDate;
-        try {
-            sqlDate = Date.valueOf(LocalDate.parse(dateText)); // yyyy-MM-dd
-        } catch (DateTimeParseException ex) {
-            JOptionPane.showMessageDialog(view, "Sai định dạng ngày. Nhập yyyy-MM-dd (VD: 2025-12-29)");
-            return null;
-        }
-
         Reward r = new Reward();
-
-        if (requireId) {
-            if (idText.isEmpty()) {
-                JOptionPane.showMessageDialog(view, "Chọn 1 dòng để sửa!");
-                return null;
-            }
-            r.setRewardId(Integer.parseInt(idText));
-        }
-
+        if (requireId) r.setRewardId(Integer.parseInt(view.txtRewardId.getText().trim()));
         r.setStudentId(studentId);
-        r.setRewardDate(sqlDate);
-        r.setRewardNote(note);
+        r.setRewardDate(new Date(view.dcRewardDate.getDate().getTime()));
+        r.setRewardNote(view.txtRewardNote.getText());
         r.setRewardQuyetDinh(qd);
         return r;
     }
-
-    private void onBack() {
-        // TODO: sửa theo project m
-        // Ví dụ:
-        // MainFrame.getInstance().setView(new HomeView());
-        // hoặc CardLayout: mainPanelLayout.show(mainPanel, "HOME");
-
-        JOptionPane.showMessageDialog(view, "Nút Quay lại: m sửa onBack() theo màn trước của project.");
+    private void clearForm() {
+        view.txtRewardId.setText("");
+        if (view.cboStudentId.getItemCount() > 0) view.cboStudentId.setSelectedIndex(0);
+        view.dcRewardDate.setDate(new java.util.Date());
+        view.txtRewardNote.setText("");
+        view.txtRewardQuyetDinh.setText("");
+        view.table.clearSelection();
     }
 }
