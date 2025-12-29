@@ -6,9 +6,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-public class Discipline extends JPanel {
+public class DisciplineView extends JPanel {
 
-    public Discipline() {
+    public DisciplineView() {
         initUI();
     }
 

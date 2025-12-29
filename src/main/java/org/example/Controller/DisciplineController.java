@@ -2,6 +2,7 @@ package org.example.Controller;
 
 import org.example.DAO.DisciplineDAO;
 import org.example.Model.Discipline;
+import org.example.View.DisciplineView;
 import org.example.View.MainFrame;
 
 import javax.swing.*;
@@ -11,10 +12,10 @@ import java.util.List;
 
 public class DisciplineController {
 
-    private org.example.View.Discipline view;
+    private DisciplineView view;
     private DisciplineDAO dao;
 
-    public DisciplineController(org.example.View.Discipline view, MainFrame mainFrame, DisciplineDAO dao) {
+    public DisciplineController(DisciplineView view, MainFrame mainFrame, DisciplineDAO dao) {
         this.view = view;
         this.dao = dao;
         initActions(mainFrame);
