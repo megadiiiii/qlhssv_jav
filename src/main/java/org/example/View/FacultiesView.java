@@ -31,7 +31,7 @@ public class FacultiesView extends JPanel {
     private JPanel formInfoInit() {
         JPanel container = new JPanel(new BorderLayout());
 
-        // ===== TITLE =====
+
         JLabel lblInfoTitle = new JLabel("Thông tin");
         lblInfoTitle.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         lblInfoTitle.setBorder(BorderFactory.createEmptyBorder(10, 30, 0, 30));

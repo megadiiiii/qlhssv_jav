@@ -1,3 +1,4 @@
+
 package org.example.Model;
 
 import lombok.AllArgsConstructor;
@@ -13,4 +14,9 @@ public class Major {
     String majorId;
     String majorName;
     String facuId;
+    @Override
+    public String toString() {
+        return majorName;
+    }
+
 }

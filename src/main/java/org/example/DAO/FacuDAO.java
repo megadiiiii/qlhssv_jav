@@ -6,9 +6,10 @@ import org.example.Model.Faculties;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.SQLException;
+
 
 public class FacuDAO {
     public List<Faculties> findAll() {
@@ -65,5 +66,6 @@ public class FacuDAO {
         conn.close();
         return row;
     }
-
 }
+
+

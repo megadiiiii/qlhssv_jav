@@ -15,11 +15,9 @@ public class MainFrame extends JFrame {
     public MainFrame() {
         setTitle("QLSV");
 
-        // NAV GIỮ NGUYÊN
         MenuNavView menu = new MenuNavView();
         setJMenuBar(menu);
 
-        // CONTENT ĐỔI BẰNG CARD
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
 
@@ -36,6 +34,9 @@ public class MainFrame extends JFrame {
         contentPanel.add(facuView, "FACU");
 
         contentPanel.add(new MajorView(), "MAJOR");
+
+        ClassView classView = new ClassView();
+
         contentPanel.add(new ClassView(), "CLASS");
         contentPanel.add(new RewardView(), "KT");
 

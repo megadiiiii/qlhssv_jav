@@ -101,7 +101,7 @@ public class FacuController {
             Faculties facu = new Faculties(id, name);
 
             try {
-                int row = dao.update(facu); // dao là instance FacuDAO
+                int row = dao.update(facu);
                 if (row > 0) {
                     loadTable(); // reload JTable sau khi cập nhật
                     JOptionPane.showMessageDialog(view, "Cập nhật thành công");

@@ -10,6 +10,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Faculties {
-    String facuId;
-    String facuName;
+
+    private String facuId;
+    private String facuName;
+
+    @Override
+    public String toString() {
+        return facuName;
+    }
+
 }

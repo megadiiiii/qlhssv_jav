@@ -1,9 +1,11 @@
 package org.example.Model;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 @Getter
 @Setter
@@ -11,9 +13,12 @@ import lombok.Setter;
 @NoArgsConstructor
 
 public class ClassInfo {
-    String classId;
-    String className;
-    String facuId;
-    String majorId;
-    int cohort;
+    private String classId;
+    private String className;
+    private String facuId;
+    private String majorId;
+
+    private String facuName;
+    private String majorName;
 }
+
