@@ -2,6 +2,7 @@ package org.example.View;
 
 import org.example.Controller.FacuController;
 import org.example.Controller.MenuNavController;
+import org.example.Controller.RewardController;
 import org.example.DAO.FacuDAO;
 
 import javax.swing.*;
@@ -37,7 +38,10 @@ public class MainFrame extends JFrame {
 
         contentPanel.add(new MajorView(), "MAJOR");
         contentPanel.add(new ClassView(), "CLASS");
-        contentPanel.add(new RewardView(), "KT");
+
+        RewardView rewardView = new RewardView();
+        new RewardController(rewardView);
+        contentPanel.add(rewardView, "KT");
 
         add(contentPanel);
 
