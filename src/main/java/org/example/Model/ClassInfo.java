@@ -13,7 +13,6 @@ import lombok.Setter;
 public class ClassInfo {
     String classId;
     String className;
-    String facuId;
     String majorId;
     int cohort;
 }
