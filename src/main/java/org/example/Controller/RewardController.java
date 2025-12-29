@@ -25,12 +25,15 @@ public class RewardController {
         clearForm();
     }
 
+    // msv
     private void loadStudentCombo() {
         view.cboStudentId.removeAllItems();
         for (String id : dao.getStudentIds()) {
             view.cboStudentId.addItem(id);
         }
+        view.cboStudentId.setEditable(true);
     }
+
 
     private void loadTable() {
         view.model.setRowCount(0);
@@ -38,6 +41,7 @@ public class RewardController {
             view.model.addRow(new Object[]{
                     r.getRewardId(),
                     r.getStudentId(),
+                    r.getStudentName(),
                     r.getRewardDate(),
                     r.getRewardNote(),
                     r.getRewardQuyetDinh()
@@ -50,10 +54,29 @@ public class RewardController {
         view.btnEditReward.addActionListener(e -> editReward());
         view.btnDeleteReward.addActionListener(e -> deleteReward());
 
+
         view.table.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
             if (e.getValueIsAdjusting()) return;
             fillForm();
         });
+
+
+        view.cboStudentId.addActionListener(e -> fillStudentName());
+    }
+
+
+    private void fillStudentName() {
+        Object val = view.cboStudentId.getEditor().getItem();
+        if (val == null) return;
+
+        String studentId = val.toString().trim();
+        if (studentId.isEmpty()) {
+            view.txtStudentName.setText("");
+            return;
+        }
+
+        String name = dao.getStudentNameById(studentId);
+        view.txtStudentName.setText(name);
     }
 
     private void addReward() {
@@ -96,7 +119,12 @@ public class RewardController {
             return;
         }
 
-        int confirm = JOptionPane.showConfirmDialog(view, "Xóa khen thưởng này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+        int confirm = JOptionPane.showConfirmDialog(
+                view,
+                "Xóa khen thưởng này?",
+                "Xác nhận",
+                JOptionPane.YES_NO_OPTION
+        );
         if (confirm != JOptionPane.YES_OPTION) return;
 
         try {
@@ -119,45 +147,61 @@ public class RewardController {
     private void fillForm() {
         int row = view.table.getSelectedRow();
         if (row < 0) return;
+
         view.txtRewardId.setText(Objects.toString(view.model.getValueAt(row, 0), ""));
         view.cboStudentId.setSelectedItem(Objects.toString(view.model.getValueAt(row, 1), ""));
-        Object dateObj = view.model.getValueAt(row, 2);
+        view.txtStudentName.setText(Objects.toString(view.model.getValueAt(row, 2), ""));
+
+        Object dateObj = view.model.getValueAt(row, 3);
         if (dateObj instanceof java.sql.Date) {
             view.dcRewardDate.setDate(new java.util.Date(((java.sql.Date) dateObj).getTime()));
         }
-        view.txtRewardNote.setText(Objects.toString(view.model.getValueAt(row, 3), ""));
-        view.txtRewardQuyetDinh.setText(Objects.toString(view.model.getValueAt(row, 4), ""));
+
+        view.txtRewardNote.setText(Objects.toString(view.model.getValueAt(row, 4), ""));
+        view.txtRewardQuyetDinh.setText(Objects.toString(view.model.getValueAt(row, 5), ""));
     }
+
+
     private Reward readForm(boolean requireId) {
         if (requireId && view.txtRewardId.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(view, "Chọn dòng để sửa!");
             return null;
         }
-        String studentId = (String) view.cboStudentId.getSelectedItem();
-        if (studentId == null || studentId.isEmpty()) {
+
+        Object val = view.cboStudentId.getEditor().getItem();
+        if (val == null || val.toString().trim().isEmpty()) {
             JOptionPane.showMessageDialog(view, "Chưa có mã sinh viên!");
             return null;
         }
+
         if (view.dcRewardDate.getDate() == null) {
             JOptionPane.showMessageDialog(view, "Chọn ngày khen thưởng!");
             return null;
         }
+
         String qd = view.txtRewardQuyetDinh.getText().trim();
         if (qd.isEmpty()) {
             JOptionPane.showMessageDialog(view, "Quyết định không được để trống!");
             return null;
         }
+
         Reward r = new Reward();
-        if (requireId) r.setRewardId(Integer.parseInt(view.txtRewardId.getText().trim()));
-        r.setStudentId(studentId);
+        if (requireId) {
+            r.setRewardId(Integer.parseInt(view.txtRewardId.getText().trim()));
+        }
+
+        r.setStudentId(val.toString().trim());
         r.setRewardDate(new Date(view.dcRewardDate.getDate().getTime()));
         r.setRewardNote(view.txtRewardNote.getText());
         r.setRewardQuyetDinh(qd);
+
         return r;
     }
+
     private void clearForm() {
         view.txtRewardId.setText("");
         if (view.cboStudentId.getItemCount() > 0) view.cboStudentId.setSelectedIndex(0);
+        view.txtStudentName.setText("");
         view.dcRewardDate.setDate(new java.util.Date());
         view.txtRewardNote.setText("");
         view.txtRewardQuyetDinh.setText("");

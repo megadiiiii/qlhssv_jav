@@ -16,11 +16,12 @@ public class RewardView extends JPanel {
     ///  form
     public JTextField txtRewardId, txtRewardQuyetDinh;
     public JComboBox<String> cboStudentId;
+    public JTextField txtStudentName;
     public JTextArea txtRewardNote;
 
     public JDateChooser dcRewardDate;
 
-    public JLabel lblRewardId, lblStudentId, lblRewardDate, lblRewardNote, lblRewardQuyetDinh;
+    public JLabel lblRewardId, lblStudentId, lblStudentName, lblRewardDate, lblRewardNote, lblRewardQuyetDinh;
 
     public JButton btnAddReward, btnDeleteReward, btnEditReward, btnBack;
 
@@ -55,17 +56,24 @@ public class RewardView extends JPanel {
         lblInfoTitle.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         lblInfoTitle.setBorder(BorderFactory.createEmptyBorder(10, 30, 0, 30));
         container.add(lblInfoTitle, BorderLayout.NORTH);
+
         JPanel form = new JPanel();
         GroupLayout layout = new GroupLayout(form);
         form.setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
+
         lblRewardId = new JLabel("Reward ID");
         txtRewardId = new JTextField();
         txtRewardId.setEnabled(false);
 
         lblStudentId = new JLabel("Mã sinh viên");
         cboStudentId = new JComboBox<>();
+        cboStudentId.setEditable(true); // nhap chon deu dc
+
+        lblStudentName = new JLabel("Tên sinh viên");
+        txtStudentName = new JTextField();
+        txtStudentName.setEnabled(false);
 
         lblRewardDate = new JLabel("Ngày");
         dcRewardDate = new JDateChooser();
@@ -92,6 +100,7 @@ public class RewardView extends JPanel {
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                 .addComponent(lblRewardId)
                                 .addComponent(lblStudentId)
+                                .addComponent(lblStudentName)
                                 .addComponent(lblRewardDate)
                                 .addComponent(lblRewardQuyetDinh)
                                 .addComponent(lblRewardNote)
@@ -99,6 +108,7 @@ public class RewardView extends JPanel {
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                 .addComponent(txtRewardId)
                                 .addComponent(cboStudentId)
+                                .addComponent(txtStudentName)
                                 .addComponent(dcRewardDate)
                                 .addComponent(txtRewardQuyetDinh)
                                 .addComponent(noteScroll)
@@ -111,7 +121,6 @@ public class RewardView extends JPanel {
                         )
                         .addGap(30)
         );
-
         layout.setVerticalGroup(
                 layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -121,6 +130,10 @@ public class RewardView extends JPanel {
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(lblStudentId)
                                 .addComponent(cboStudentId)
+                        )
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lblStudentName)
+                                .addComponent(txtStudentName)
                         )
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(lblRewardDate)
@@ -148,8 +161,9 @@ public class RewardView extends JPanel {
 
     private void tableInit() {
         model = new DefaultTableModel(
-                new String[]{"Reward ID", "Mã SV", "Ngày", "Lý do", "Quyết định"}, 0
+                new String[]{"Reward ID", "Mã SV", "Tên SV", "Ngày", "Lý do", "Quyết định"}, 0
         );
+
         table = new JTable(model);
         table.setFillsViewportHeight(true);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
