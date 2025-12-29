@@ -33,7 +33,7 @@ public class FacuDAO {
 
     public void insert(Faculties facu) throws SQLException {
         Connection conn = dbConn.getConnection();
-        String sql = "insert into faculties (facu_id, facu_name) values (?, ?)";
+        String sql = "insert into faculties (studentId, lastName, firstName, dob, gender, email, hometown, phone, idNo, classId, majorId, facuId, status) values (?, ?)";
 
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1, facu.getFacuId());

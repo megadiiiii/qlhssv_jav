@@ -7,12 +7,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 
-public class ClassInfo {
-    String classId;
-    String className;
-    String majorId;
-    int cohort;
+public class Account {
+    String username;
+    String password;
+    String name;
 }
