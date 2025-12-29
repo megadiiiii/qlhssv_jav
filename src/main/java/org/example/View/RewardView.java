@@ -4,75 +4,106 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-public class RewardView  extends JPanel {
+public class RewardView extends JPanel {
+
     public RewardView() {
-        init();
+        initUI();
     }
 
+    // ===== FORM COMPONENTS =====
+    public JTextField txtRewardId, txtRewardDate, txtRewardQuyetDinh;
+    public JComboBox<String> cboStudentId;
+    public JTextArea txtRewardNote;
 
-    public JTextField txtStudentId, txtRewardDate, txtDecision;
-    public JTextArea txtReason;
-    public JButton btnAdd, btnEdit, btnDelete, btnBack;
-    public JTable table;
+    public JLabel lblRewardId, lblStudentId, lblRewardDate, lblRewardNote, lblRewardQuyetDinh;
+
+    public JButton btnAddReward, btnDeleteReward, btnEditReward, btnBack;
+
+    // ===== TABLE =====
     public DefaultTableModel model;
+    public JScrollPane scrollPane;
+    public JTable table;
 
+    // giữ panel table để add đúng chỗ
+    private JPanel tablePanel;
 
-    private void init() {
+    private void initUI() {
         setLayout(new BorderLayout());
-        JLabel lblTitle = new JLabel("Quản lý khen thưởng");
-        lblTitle.setBorder(BorderFactory.createEmptyBorder(30,30,30,30));
-        lblTitle.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 
+        JLabel lblTitle = new JLabel("Quản lý khen thưởng");
+        lblTitle.setBorder(BorderFactory.createEmptyBorder(30, 30, 20, 30));
+        lblTitle.setFont(new Font("Segoe UI", Font.PLAIN, 20));
         add(lblTitle, BorderLayout.NORTH);
+
+        // ✅ tạo 1 panel giữa để chứa form + table (form trên, table dưới)
+        JPanel center = new JPanel(new BorderLayout());
+        center.add(formInfoInit(), BorderLayout.NORTH);
+
+        tableInit();
+        center.add(tablePanel, BorderLayout.CENTER);
+
+        add(center, BorderLayout.CENTER);
     }
-    private JPanel formInit() {
+
+    private JPanel formInfoInit() {
         JPanel container = new JPanel(new BorderLayout());
 
-        JLabel lblInfo = new JLabel("Thông tin khen thưởng");
-        lblInfo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        lblInfo.setBorder(BorderFactory.createEmptyBorder(10, 30, 0, 30));
-        container.add(lblInfo, BorderLayout.NORTH);
+        JLabel lblInfoTitle = new JLabel("Thông tin");
+        lblInfoTitle.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblInfoTitle.setBorder(BorderFactory.createEmptyBorder(10, 30, 0, 30));
+        container.add(lblInfoTitle, BorderLayout.NORTH);
 
         JPanel form = new JPanel();
         GroupLayout layout = new GroupLayout(form);
         form.setLayout(layout);
+
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
-        JLabel lblStudentId = new JLabel("Mã sinh viên");
-        JLabel lblRewardDate = new JLabel("Ngày khen thưởng");
-        JLabel lblDecision = new JLabel("Quyết định");
-        JLabel lblReason = new JLabel("Lý do");
+        lblRewardId = new JLabel("Reward ID");
+        txtRewardId = new JTextField();
+        txtRewardId.setEnabled(false);
 
-        txtStudentId = new JTextField();
+        lblStudentId = new JLabel("Mã sinh viên");
+        cboStudentId = new JComboBox<>();
+
+        lblRewardDate = new JLabel("Ngày (yyyy-MM-dd)");
         txtRewardDate = new JTextField();
-        txtDecision = new JTextField();
-        txtReason = new JTextArea(3, 20);
-        JScrollPane reasonScroll = new JScrollPane(txtReason);
 
-        btnAdd = new JButton("Lưu");
-        btnEdit = new JButton("Sửa");
-        btnDelete = new JButton("Xóa");
+        lblRewardQuyetDinh = new JLabel("Quyết định");
+        txtRewardQuyetDinh = new JTextField();
+
+        lblRewardNote = new JLabel("Lý do");
+        txtRewardNote = new JTextArea(3, 20);
+        txtRewardNote.setLineWrap(true);
+        txtRewardNote.setWrapStyleWord(true);
+        JScrollPane noteScroll = new JScrollPane(txtRewardNote);
+
+        btnAddReward = new JButton("Thêm");
+        btnDeleteReward = new JButton("Xóa");
+        btnEditReward = new JButton("Sửa");
         btnBack = new JButton("Quay lại");
 
         layout.setHorizontalGroup(
                 layout.createSequentialGroup()
                         .addGap(30)
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(lblRewardId)
                                 .addComponent(lblStudentId)
                                 .addComponent(lblRewardDate)
-                                .addComponent(lblDecision)
-                                .addComponent(lblReason)
+                                .addComponent(lblRewardQuyetDinh)
+                                .addComponent(lblRewardNote)
                         )
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addComponent(txtStudentId)
+                                .addComponent(txtRewardId)
+                                .addComponent(cboStudentId)
                                 .addComponent(txtRewardDate)
-                                .addComponent(txtDecision)
-                                .addComponent(reasonScroll)
-                                .addGroup(layout.createSequentialGroup()
-                                        .addComponent(btnAdd)
-                                        .addComponent(btnEdit)
-                                        .addComponent(btnDelete)
+                                .addComponent(txtRewardQuyetDinh)
+                                .addComponent(noteScroll)
+                                .addGroup(GroupLayout.Alignment.CENTER, layout.createSequentialGroup()
+                                        .addComponent(btnAddReward)
+                                        .addComponent(btnDeleteReward)
+                                        .addComponent(btnEditReward)
                                         .addComponent(btnBack)
                                 )
                         )
@@ -82,25 +113,29 @@ public class RewardView  extends JPanel {
         layout.setVerticalGroup(
                 layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lblRewardId)
+                                .addComponent(txtRewardId)
+                        )
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(lblStudentId)
-                                .addComponent(txtStudentId)
+                                .addComponent(cboStudentId)
                         )
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(lblRewardDate)
                                 .addComponent(txtRewardDate)
                         )
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblDecision)
-                                .addComponent(txtDecision)
+                                .addComponent(lblRewardQuyetDinh)
+                                .addComponent(txtRewardQuyetDinh)
                         )
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addComponent(lblReason)
-                                .addComponent(reasonScroll)
+                                .addComponent(lblRewardNote)
+                                .addComponent(noteScroll)
                         )
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(btnAdd)
-                                .addComponent(btnEdit)
-                                .addComponent(btnDelete)
+                                .addComponent(btnAddReward)
+                                .addComponent(btnDeleteReward)
+                                .addComponent(btnEditReward)
                                 .addComponent(btnBack)
                         )
         );
@@ -108,24 +143,25 @@ public class RewardView  extends JPanel {
         container.add(form, BorderLayout.CENTER);
         return container;
     }
+
     private void tableInit() {
         model = new DefaultTableModel(
-                new String[]{"Mã SV", "Ngày KT", "Quyết định", "Lý do"}, 0
-        ) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
+                new String[]{"Reward ID", "Mã SV", "Ngày", "Lý do", "Quyết định"}, 0
+        );
 
         table = new JTable(model);
-        table.setRowHeight(28);
-        table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
+        table.setFillsViewportHeight(true);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        table.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        table.setRowHeight(30);
+        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 16));
+        table.getTableHeader().setBackground(Color.LIGHT_GRAY);
+        table.getTableHeader().setForeground(Color.BLACK);
 
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+        scrollPane = new JScrollPane(table);
 
-        add(scrollPane, BorderLayout.SOUTH);
+        tablePanel = new JPanel(new BorderLayout());
+        tablePanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+        tablePanel.add(scrollPane, BorderLayout.CENTER);
     }
 }

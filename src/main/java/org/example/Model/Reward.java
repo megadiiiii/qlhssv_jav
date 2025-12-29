@@ -17,4 +17,12 @@ public class Reward {
     String rewardNote;
     Date rewardDate;
     String rewardQD;
+
+    public String getRewardQD() {
+        return rewardQD;
+    }
+
+    public void setRewardQD(String rewardQD) {
+        this.rewardQD = rewardQD;
+    }
 }
