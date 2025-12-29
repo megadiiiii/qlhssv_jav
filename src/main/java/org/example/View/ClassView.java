@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class ClassView extends JPanel {
 
-    public JTextField txtClassId, txtClassName, txtSearchId, txtSearchName;
+    public JTextField txtClassId, txtClassName, txtSearchId, txtSearchName, txtCohort;
     public JComboBox cboFacu, cboMajor;
     public JButton btnAdd, btnUpdate, btnDelete, btnSearch;
     public JTable tblClass;
@@ -41,6 +41,7 @@ public class ClassView extends JPanel {
         txtClassName = new JTextField(15);
         txtSearchId = new JTextField(15);
         txtSearchName = new JTextField(15);
+        txtCohort = new JTextField(15);
         cboFacu = new JComboBox();
         cboMajor = new JComboBox();
 
@@ -50,6 +51,8 @@ public class ClassView extends JPanel {
         g.gridx = 1; pnlForm.add(txtClassId, g);
         g.gridx = 2; pnlForm.add(new JLabel("Tên lớp"), g);
         g.gridx = 3; pnlForm.add(txtClassName, g);
+        g.gridx = 4; pnlForm.add(new JLabel("Khóa"), g);
+        g.gridx = 5; pnlForm.add(txtCohort, g);
 
         y++;
         g.gridx = 0; g.gridy = y; pnlForm.add(new JLabel("Khoa"), g);
@@ -91,7 +94,7 @@ public class ClassView extends JPanel {
 
 
         tableModel = new DefaultTableModel(
-                new Object[]{"Mã lớp", "Tên lớp", "Khoa", "Chuyên ngành"}, 0
+                new Object[]{"Mã lớp", "Tên lớp", "Khoa", "Chuyên ngành", "Khóa"}, 0
         );
 
         tblClass = new JTable(tableModel);

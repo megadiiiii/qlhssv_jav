@@ -17,7 +17,7 @@ public class ClassInfo {
     private String className;
     private String facuId;
     private String majorId;
-
+    private int cohort;
     private String facuName;
     private String majorName;
 }
