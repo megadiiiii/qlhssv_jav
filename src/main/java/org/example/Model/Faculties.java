@@ -12,4 +12,9 @@ import lombok.Setter;
 public class Faculties {
     String facuId;
     String facuName;
+
+    @Override
+    public String toString() {
+        return facuName;
+    }
 }

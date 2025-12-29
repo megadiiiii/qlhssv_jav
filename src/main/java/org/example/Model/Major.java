@@ -13,4 +13,6 @@ public class Major {
     String majorId;
     String majorName;
     String facuId;
-}
+    String facuName;
+    }
+
