@@ -11,10 +11,8 @@ import java.sql.SQLException;
 import java.util.Objects;
 
 public class RewardController {
-
     private final RewardView view;
     private final RewardDAO dao;
-
     public RewardController(RewardView view) {
         this.view = view;
         this.dao = new RewardDAO();
@@ -25,7 +23,6 @@ public class RewardController {
         clearForm();
     }
 
-    // msv
     private void loadStudentCombo() {
         view.cboStudentId.removeAllItems();
         for (String id : dao.getStudentIds()) {
@@ -33,7 +30,6 @@ public class RewardController {
         }
         view.cboStudentId.setEditable(true);
     }
-
 
     private void loadTable() {
         view.model.setRowCount(0);
@@ -54,18 +50,17 @@ public class RewardController {
         view.btnEditReward.addActionListener(e -> editReward());
         view.btnDeleteReward.addActionListener(e -> deleteReward());
 
-
         view.table.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
             if (e.getValueIsAdjusting()) return;
             fillForm();
         });
 
-
         view.cboStudentId.addActionListener(e -> fillStudentName());
     }
 
-
     private void fillStudentName() {
+        if (!view.cboStudentId.isEnabled()) return;
+
         Object val = view.cboStudentId.getEditor().getItem();
         if (val == null) return;
 
@@ -144,6 +139,7 @@ public class RewardController {
         }
     }
 
+
     private void fillForm() {
         int row = view.table.getSelectedRow();
         if (row < 0) return;
@@ -159,8 +155,10 @@ public class RewardController {
 
         view.txtRewardNote.setText(Objects.toString(view.model.getValueAt(row, 4), ""));
         view.txtRewardQuyetDinh.setText(Objects.toString(view.model.getValueAt(row, 5), ""));
-    }
 
+        view.cboStudentId.setEnabled(false);
+        view.txtStudentName.setEnabled(false);
+    }
 
     private Reward readForm(boolean requireId) {
         if (requireId && view.txtRewardId.getText().trim().isEmpty()) {
@@ -197,11 +195,16 @@ public class RewardController {
 
         return r;
     }
-
     private void clearForm() {
         view.txtRewardId.setText("");
-        if (view.cboStudentId.getItemCount() > 0) view.cboStudentId.setSelectedIndex(0);
+
+        if (view.cboStudentId.getItemCount() > 0) {
+            view.cboStudentId.setSelectedIndex(0);
+        }
+
+        view.cboStudentId.setEnabled(true);
         view.txtStudentName.setText("");
+        view.txtStudentName.setEnabled(false);
         view.dcRewardDate.setDate(new java.util.Date());
         view.txtRewardNote.setText("");
         view.txtRewardQuyetDinh.setText("");
