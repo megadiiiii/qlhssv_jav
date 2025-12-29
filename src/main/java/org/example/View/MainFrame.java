@@ -1,8 +1,10 @@
 package org.example.View;
 
+import org.example.Controller.DisciplineController;
 import org.example.Controller.FacuController;
 import org.example.Controller.MenuNavController;
 import org.example.Controller.RewardController;
+import org.example.DAO.DisciplineDAO;
 import org.example.DAO.FacuDAO;
 
 import javax.swing.*;
@@ -42,6 +44,11 @@ public class MainFrame extends JFrame {
         RewardView rewardView = new RewardView();
         new RewardController(rewardView);
         contentPanel.add(rewardView, "KT");
+
+        DisciplineView disciplineView = new DisciplineView();
+        DisciplineDAO disciplineDAO = new DisciplineDAO();
+        new DisciplineController(disciplineView, this, disciplineDAO);
+        contentPanel.add(disciplineView, "KL");
 
         add(contentPanel);
 
