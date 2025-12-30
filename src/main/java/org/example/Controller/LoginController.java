@@ -37,7 +37,7 @@ public class LoginController {
                     JOptionPane.showMessageDialog(view,
                             "Xin chào " + account.getName());
                     view.dispose();
-                     new MainFrame(     ).setVisible(true);
+                    new MainFrame(     ).setVisible(true);
                 } else {
                     JOptionPane.showMessageDialog(view,
                             "Sai username hoặc password");
