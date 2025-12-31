@@ -1,6 +1,7 @@
 package org.example.View;
 
 import org.example.Controller.*;
+import org.example.DAO.CohortDAO;
 import org.example.DAO.DisciplineDAO;
 import org.example.DAO.FacuDAO;
 import org.example.DAO.StudentDAO;
@@ -40,6 +41,11 @@ public class MainFrame extends JFrame {
 
         contentPanel.add(new MajorView(), "MAJOR");
         contentPanel.add(new ClassView(), "CLASS");
+
+        CohortView cohortView = new CohortView();
+        CohortDAO cohortDAO = new CohortDAO();
+        new CohortController(cohortView, this, cohortDAO);
+        contentPanel.add(cohortView, "COHORT");
 
         RewardView rewardView = new RewardView();
         new RewardController(rewardView);

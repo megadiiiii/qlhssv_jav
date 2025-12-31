@@ -3,7 +3,7 @@ package org.example.View;
 import javax.swing.*;
 
 public class MenuNavView extends JMenuBar {
-    public JMenuItem ttsv, facu, major, className, kt, kl, logoutItem, homepage;
+    public JMenuItem ttsv, facu, major, className, kt, kl, logoutItem, homepage, cohort;
 
     public MenuNavView() {
         JMenu hp = new JMenu("Trang chủ");
@@ -20,9 +20,11 @@ public class MenuNavView extends JMenuBar {
         facu = new JMenuItem("Quản lý khoa");
         major = new JMenuItem("Quản lý chuyên ngành");
         className = new JMenuItem("Quản lý lớp");
+        cohort = new JMenuItem("Khóa đào tạo");
         department.add(facu);
         department.add(major);
         department.add(className);
+        department.add(cohort);
         add(department);
 
         JMenu hc = new JMenu("Khen thưởng - Kỷ luật");

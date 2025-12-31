@@ -1,12 +1,10 @@
 package org.example.View;
 
-import org.example.Config.dbConn;
 import org.example.Controller.LoginController;
 import org.example.DAO.LoginDAO;
 
 import javax.swing.*;
 import java.awt.*;
-import java.sql.Connection;
 import java.sql.SQLException;
 
 public class LoginView extends JFrame {
