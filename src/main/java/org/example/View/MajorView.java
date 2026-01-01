@@ -6,134 +6,179 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-
-
-
 public class MajorView extends JPanel {
 
+    //
+    //INPUT (CRUD)
     public JTextField txtMajorId, txtMajorName;
-    public JComboBox<Faculties> cboFacuName;
+    public JComboBox<Faculties> cboFacu;
+    public JComboBox<Faculties> cboFacuSearch;
 
-    public JLabel lblMajorId, lblMajorName, lblFacuName;
-    public JButton btnAddMajor, btnBack, btnEditMajor, btnDeleteMajor;
+    //
+    //INPUT (SEARCH)
+    public JTextField txtMajorIdSearch, txtMajorNameSearch;
+
+    //
+    //BUTTONS (5 nút 1 khu)
+    public JButton btnMajorAdd, btnMajorUpdate, btnMajorDelete, btnSearch, btnBack;
+
+    //
+    //TABLE
     public DefaultTableModel model;
-    public JScrollPane scrollPane;
     public JTable table;
 
     public MajorView() {
-        init();
+        initUI();
     }
 
-    private void init() {
-        setLayout(new BorderLayout());
+    private void initUI() {
+        setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+        // Title
         JLabel lblTitle = new JLabel("Quản lý thông tin chuyên ngành");
-        lblTitle.setBorder(BorderFactory.createEmptyBorder(20, 30, 10, 30));
         lblTitle.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        lblTitle.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        add(lblTitle, BorderLayout.NORTH);
 
-        JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.add(lblTitle, BorderLayout.NORTH);
-        topPanel.add(formInfoInit(), BorderLayout.CENTER);
+        // Center = form + table
+        JPanel center = new JPanel(new BorderLayout(10, 10));
+        center.add(buildFormArea(), BorderLayout.NORTH);
+        center.add(buildTableArea(), BorderLayout.CENTER);
 
-        add(topPanel, BorderLayout.NORTH);
-        tableInit(); // table ở CENTER
+        add(center, BorderLayout.CENTER);
     }
 
+    private JPanel buildFormArea() {
+        JPanel wrapper = new JPanel(new BorderLayout(8, 8));
 
-    private JPanel formInfoInit() {
-        JPanel container = new JPanel(new BorderLayout());
+        //
+        //Form CRUD
+        JPanel formCrud = new JPanel(new GridBagLayout());
+        formCrud.setBorder(BorderFactory.createTitledBorder("Thông tin"));
 
-        JLabel lblInfoTitle = new JLabel("Thông tin");
-        lblInfoTitle.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        lblInfoTitle.setBorder(BorderFactory.createEmptyBorder(10, 30, 0, 30));
-        container.add(lblInfoTitle, BorderLayout.NORTH);
+        GridBagConstraints g = new GridBagConstraints();
+        g.insets = new Insets(6, 20, 6, 20);
+        g.fill = GridBagConstraints.HORIZONTAL;
+        g.weightx = 0;
 
-        JPanel form = new JPanel();
-        GroupLayout layout = new GroupLayout(form);
-        form.setLayout(layout);
+        // Row 0: Name | Start | End
+        int row = 0;
 
-        layout.setAutoCreateGaps(true);
-        layout.setAutoCreateContainerGaps(true);
+        g.gridy = row;
 
-        lblMajorId = new JLabel("Mã ngành");
-        txtMajorId = new JTextField();
+        g.gridx = 0;
+        formCrud.add(new JLabel("Khoa/Viện"), g);
+        g.gridx = 1;
+        g.weightx = 0.5;
+        cboFacu = new JComboBox<>();
+        formCrud.add(cboFacu, g);
 
-        lblMajorName = new JLabel("Tên ngành");
-        txtMajorName = new JTextField();
+        g.gridx = 2;
+        g.weightx = 0;
+        formCrud.add(new JLabel("Mã chuyên ngành"), g);
+        g.gridx = 3;
+        g.weightx = 0.1;
+        txtMajorId = new JTextField(8);
+        formCrud.add(txtMajorId, g);
 
-        lblFacuName = new JLabel("Tên khoa");
-        cboFacuName = new JComboBox<>();
+        g.gridx = 4;
+        g.weightx = 0;
+        formCrud.add(new JLabel("Tên chuyên ngành"), g);
+        g.gridx = 5;
+        g.weightx = 0.5;
+        txtMajorName = new JTextField(8);
+        formCrud.add(txtMajorName, g);
 
-        btnAddMajor = new JButton("Thêm");
-        btnDeleteMajor = new JButton("Xóa");
-        btnEditMajor = new JButton("Sửa");
+        //
+        //Form SEARCH
+        JPanel formSearch = new JPanel(new GridBagLayout());
+        formSearch.setBorder(BorderFactory.createTitledBorder("Tìm kiếm"));
+
+        GridBagConstraints s = new GridBagConstraints();
+        s.insets = new Insets(6, 20, 6, 20);
+        s.fill = GridBagConstraints.HORIZONTAL;
+        s.weightx = 0;
+
+        int srow = 0;
+        s.gridy = srow;
+
+        s.gridx = 0;
+        formSearch.add(new JLabel("Khoa/Viện"), s);
+        s.gridx = 1;
+        s.weightx = 0.5;
+        cboFacuSearch = new JComboBox<>();
+        formSearch.add(cboFacuSearch, s);
+
+        s.gridx = 2;
+        s.weightx = 0;
+        formSearch.add(new JLabel("Mã chuyên ngành"), s);
+        s.gridx = 3;
+        s.weightx = 0.1;
+        txtMajorIdSearch = new JTextField(8);
+        formSearch.add(txtMajorIdSearch, s);
+
+        s.gridx = 4;
+        s.weightx = 0;
+        formSearch.add(new JLabel("Tên chuyên ngành"), s);
+        s.gridx = 5;
+        s.weightx = 0.5;
+        txtMajorNameSearch = new JTextField(8);
+        formSearch.add(txtMajorNameSearch, s);
+
+        //
+        //5 buttons in one bar
+        JPanel btnBar = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 6));
+        btnMajorAdd = new JButton("Thêm");
+        btnMajorUpdate = new JButton("Sửa");
+        btnMajorDelete = new JButton("Xóa");
+        btnSearch = new JButton("Tìm");
         btnBack = new JButton("Quay lại");
 
-        layout.setHorizontalGroup(
-                layout.createSequentialGroup()
-                        .addGap(30)
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addComponent(lblMajorId)
-                                .addComponent(lblMajorName)
-                                .addComponent(lblFacuName)
-                        )
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addComponent(txtMajorId, 200, 200, 200)
-                                .addComponent(txtMajorName, 200, 200, 200)
-                                .addComponent(cboFacuName, 200, 200, 200)
-                                .addGroup(layout.createSequentialGroup()
-                                        .addComponent(btnAddMajor)
-                                        .addComponent(btnDeleteMajor)
-                                        .addComponent(btnEditMajor)
-                                        .addComponent(btnBack)
-                                )
-                        )
-                        .addGap(30)
-        );
+        btnBar.add(btnMajorAdd);
+        btnBar.add(btnMajorUpdate);
+        btnBar.add(btnMajorDelete);
+        btnBar.add(btnSearch);
+        btnBar.add(btnBack);
 
-        layout.setVerticalGroup(
-                layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblMajorId)
-                                .addComponent(txtMajorId)
-                        )
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblMajorName)
-                                .addComponent(txtMajorName)
-                        )
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblFacuName)
-                                .addComponent(cboFacuName)
-                        )
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(btnAddMajor)
-                                .addComponent(btnDeleteMajor)
-                                .addComponent(btnEditMajor)
-                                .addComponent(btnBack)
-                        )
-        );
+        wrapper.add(formCrud, BorderLayout.NORTH);
+        wrapper.add(formSearch, BorderLayout.CENTER);
+        wrapper.add(btnBar, BorderLayout.SOUTH);
 
-        container.add(form, BorderLayout.CENTER);
-        return container;
+        return wrapper;
     }
 
-    private void tableInit() {
+    private JScrollPane buildTableArea() {
         model = new DefaultTableModel(
-                new String[]{"Mã ngành", "Tên ngành", "Mã khoa", "Tên khoa"}, 0
-        );
+                new String[]{"Khoa", "Mã chuyên ngành", "Tên chuyên ngành"}, 0
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
 
         table = new JTable(model);
-        table.setRowHeight(30);
-        table.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 15));
+        table.setFillsViewportHeight(true);
+        table.setRowHeight(28);
+        table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
 
-        scrollPane = new JScrollPane(table);
 
-        JPanel tablePanel = new JPanel(new BorderLayout());
-        tablePanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
-        tablePanel.add(scrollPane, BorderLayout.CENTER);
+        JScrollPane sp = new JScrollPane(table);
+        sp.setBorder(BorderFactory.createTitledBorder("Danh sách"));
+        return sp;
+    }
 
-        add(tablePanel, BorderLayout.CENTER);
-
+    // Quick test
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame f = new JFrame("MajorView Test");
+            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            f.setSize(1100, 650);
+            f.setLocationRelativeTo(null);
+            f.setContentPane(new MajorView());
+            f.setVisible(true);
+        });
     }
 }
