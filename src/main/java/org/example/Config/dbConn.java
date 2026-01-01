@@ -10,5 +10,6 @@ public class dbConn {
         String user = "root";
         String password = "123456";
         return DriverManager.getConnection(url, user, password);
-    };
+    }
+    //Test
 }

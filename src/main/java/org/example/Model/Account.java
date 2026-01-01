@@ -9,14 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Major {
-    String majorId;
-    String majorName;
-    Faculties faculty;
 
-    @Override
-    public String toString() {
-        return majorName;
-    }
+public class Account {
+    String username;
+    String password;
+    String name;
 }
-
