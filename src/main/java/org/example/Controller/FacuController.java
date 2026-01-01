@@ -34,7 +34,8 @@ public class FacuController {
         List<Faculties> list = dao.findAll();
         for (Faculties f : list) {
             view.model.addRow(new Object[]{
-                    f.getFacuId(), f.getFacuName()
+                    f.getFacuId(),
+                    f.getFacuName()
             });
         }
     }

@@ -1,10 +1,10 @@
 package org.example.View;
 
-import org.example.Controller.*;
-import org.example.DAO.CohortDAO;
-import org.example.DAO.DisciplineDAO;
+import org.example.Controller.FacuController;
+import org.example.Controller.MajorController;
+import org.example.Controller.MenuNavController;
 import org.example.DAO.FacuDAO;
-//import org.example.DAO.StudentDAO;
+import org.example.DAO.MajorDAO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,32 +29,22 @@ public class MainFrame extends JFrame {
         HomepageView homepage = new HomepageView();
         contentPanel.add(homepage, "HOME");
 
-//        StudentView studentView = new StudentView();
-//        StudentDAO studentDAO = new StudentDAO();
-//        new StudentController(studentView, this, studentDAO);
-//        contentPanel.add(studentView, "SV");
+
+        contentPanel.add(new StudentView(), "SV");
 
         FacultiesView facuView = new FacultiesView();
         FacuDAO dao = new FacuDAO();
         new FacuController(facuView, this, dao);
         contentPanel.add(facuView, "FACU");
 
-        contentPanel.add(new MajorView(), "MAJOR");
+
+        MajorView majorView = new MajorView();
+        MajorDAO majorDAO = new MajorDAO();
+        FacuDAO facuDAO = new FacuDAO();
+        new MajorController(majorView, this, majorDAO, facuDAO);
+        contentPanel.add(majorView, "MAJOR");
         contentPanel.add(new ClassView(), "CLASS");
-
-        CohortView cohortView = new CohortView();
-        CohortDAO cohortDAO = new CohortDAO();
-        new CohortController(cohortView, this, cohortDAO);
-        contentPanel.add(cohortView, "COHORT");
-
-        RewardView rewardView = new RewardView();
-        new RewardController(rewardView);
-        contentPanel.add(rewardView, "KT");
-
-        DisciplineView disciplineView = new DisciplineView();
-        DisciplineDAO disciplineDAO = new DisciplineDAO();
-        new DisciplineController(disciplineView, this, disciplineDAO);
-        contentPanel.add(disciplineView, "KL");
+        contentPanel.add(new RewardView(), "KT");
 
         add(contentPanel);
 
