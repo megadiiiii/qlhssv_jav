@@ -11,37 +11,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MajorDAO {
-    public List<Major> findAll() {
+    public List<Major> findAllWithFaculty() {
         List<Major> list = new ArrayList<>();
-        String sql = "SELECT * FROM Major";
 
-        try (Connection c = dbConn.getConnection();
-             PreparedStatement ps = c.prepareStatement(sql);
+        String sql = """
+        select m.major_id, m.major_name, m.facu_id, f.facu_name
+        from major m
+        join faculties f on f.facu_id = m.facu_id
+    """;
+
+        try (Connection conn = dbConn.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                list.add(new Major(
-                        rs.getString("major_id"),
-                        rs.getString("major_name"),
-                        rs.getString("facu_id"),
-                        rs.getString("facu_name")
-                ));
+                Major m = new Major();
+                m.setMajorId(rs.getString("major_id"));
+                m.setMajorName(rs.getString("major_name"));
+                m.setFacuId(rs.getString("facu_id"));
+                list.add(m);
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
         return list;
     }
 
+
     public void insert(Major major) throws SQLException {
         Connection conn = dbConn.getConnection();
-        String sql = "insert into major (major_id, major_name,facu_id, facu_name) values (?, ?, ?, ?)";
+        String sql = "insert into major (major_id, major_name,facu_id) values (?, ?, ?)";
 
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1, major.getMajorId());
         ps.setString(2, major.getMajorName());
         ps.setString(3, major.getFacuId());
-        ps.setString(4, major.getFacuName());
         ps.executeUpdate();
         ps.close();
         conn.close();
@@ -60,16 +65,23 @@ public class MajorDAO {
 
     public int update(Major major) throws SQLException {
         Connection conn = dbConn.getConnection();
-        String sql = "UPDATE major SET major_name = ? WHERE major_id = ?";
+
+        String sql = """
+        UPDATE major
+        SET major_name = ?, facu_id = ?
+        WHERE major_id = ?
+    """;
+
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1, major.getMajorName());
-        ps.setString(2, major.getMajorId());
-        ps.setString(3, major.getFacuId());
-        ps.setString(4, major.getFacuName());
+        ps.setString(2, major.getFacuId());
+        ps.setString(3, major.getMajorId());
+
         int row = ps.executeUpdate();
         ps.close();
         conn.close();
         return row;
     }
+
 
 }

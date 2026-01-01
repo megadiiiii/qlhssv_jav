@@ -1,4 +1,11 @@
 package org.example.Controller;
+import javax.swing.table.DefaultTableModel;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import org.example.Config.dbConn;
+
 
 import org.example.DAO.FacuDAO;
 import org.example.DAO.MajorDAO;
@@ -25,7 +32,7 @@ public class MajorController {
         this.facuDAO = facuDAO;
 
         loadFacuCombo();
-        loadTable();
+        majorsLoad();
         initActions(mainFrame);
 
         view.table.getSelectionModel().addListSelectionListener(e -> {
@@ -34,18 +41,21 @@ public class MajorController {
     }
 
     // ===== LOAD TABLE =====
-    private void loadTable() {
-        view.model.setRowCount(0);
-        List<Major> list = majorDAO.findAll();
+    private void majorsLoad() {
+        DefaultTableModel model = view.model;
+        model.setRowCount(0);
 
+        List<Major> list = majorDAO.findAllWithFaculty();
         for (Major m : list) {
-            view.model.addRow(new Object[]{
+            model.addRow(new Object[]{
                     m.getMajorId(),
                     m.getMajorName(),
-                    m.getFacuId(),
+                    m.getFacuId()
             });
         }
     }
+
+
 
     // ===== LOAD COMBOBOX =====
     private void loadFacuCombo() {
@@ -68,13 +78,12 @@ public class MajorController {
                 Major m = new Major(
                         view.txtMajorId.getText(),
                         view.txtMajorName.getText(),
-                        f.getFacuId(),
-                        f.getFacuName()
+                        f.getFacuId()
 
                 );
                 majorDAO.insert(m);
                 JOptionPane.showMessageDialog(view, "Thêm thành công");
-                loadTable();
+                majorsLoad();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(view, "Thêm thất bại");
@@ -89,13 +98,12 @@ public class MajorController {
                 Major m = new Major(
                         view.txtMajorId.getText(),
                         view.txtMajorName.getText(),
-                        f.getFacuId(),
-                        f.getFacuName()
+                        f.getFacuId()
 
                 );
                 if (majorDAO.update(m) > 0) {
                     JOptionPane.showMessageDialog(view, "Cập nhật thành công");
-                    loadTable();
+                    majorsLoad();
                 }
             } catch (SQLException ex) {
                 ex.printStackTrace();
@@ -116,7 +124,7 @@ public class MajorController {
             try {
                 majorDAO.delete(m);
                 JOptionPane.showMessageDialog(view, "Xóa thành công");
-                loadTable();
+                majorsLoad();
             } catch (SQLException ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(view, "Xóa thất bại");
