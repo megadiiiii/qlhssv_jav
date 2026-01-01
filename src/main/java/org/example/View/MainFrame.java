@@ -1,8 +1,10 @@
 package org.example.View;
 
+import org.example.Controller.CohortController;
 import org.example.Controller.FacuController;
 import org.example.Controller.MajorController;
 import org.example.Controller.MenuNavController;
+import org.example.DAO.CohortDAO;
 import org.example.DAO.FacuDAO;
 import org.example.DAO.MajorDAO;
 
@@ -30,7 +32,7 @@ public class MainFrame extends JFrame {
         contentPanel.add(homepage, "HOME");
 
 
-        contentPanel.add(new StudentView(), "SV");
+//        contentPanel.add(new StudentView(), "SV");
 
         FacultiesView facuView = new FacultiesView();
         FacuDAO dao = new FacuDAO();
@@ -43,8 +45,19 @@ public class MainFrame extends JFrame {
         FacuDAO facuDAO = new FacuDAO();
         new MajorController(majorView, this, majorDAO, facuDAO);
         contentPanel.add(majorView, "MAJOR");
+
+
         contentPanel.add(new ClassView(), "CLASS");
+
+        CohortView cohortView = new CohortView();
+        CohortDAO cohortDAO = new CohortDAO();
+        new CohortController(cohortView, this, cohortDAO);
+        contentPanel.add(cohortView, "COHORT");
+
+
         contentPanel.add(new RewardView(), "KT");
+
+        contentPanel.add(new RewardView(), "KL");
 
         add(contentPanel);
 

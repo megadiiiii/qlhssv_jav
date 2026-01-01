@@ -1,13 +1,18 @@
 package org.example;
 
 
-import org.example.View.MainFrame;
+import org.example.Controller.LoginController;
+import org.example.DAO.LoginDAO;
+import org.example.View.LoginView;
 import javax.swing.SwingUtilities;
 
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new MainFrame();
+            LoginView view = new LoginView();
+            LoginDAO dao = new LoginDAO();
+            new LoginController(view, dao);
+            view.setVisible(true);
         });
     }
 }
