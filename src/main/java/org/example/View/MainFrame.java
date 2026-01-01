@@ -1,12 +1,10 @@
 package org.example.View;
 
-import org.example.Controller.CohortController;
-import org.example.Controller.FacuController;
-import org.example.Controller.MajorController;
-import org.example.Controller.MenuNavController;
+import org.example.Controller.*;
 import org.example.DAO.CohortDAO;
 import org.example.DAO.FacuDAO;
 import org.example.DAO.MajorDAO;
+import org.example.DAO.TeacherDAO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,6 +52,10 @@ public class MainFrame extends JFrame {
         new CohortController(cohortView, this, cohortDAO);
         contentPanel.add(cohortView, "COHORT");
 
+        TeacherView teacherView = new TeacherView();
+        TeacherDAO teacherDAO = new TeacherDAO();
+        new TeacherController(teacherView, this, teacherDAO);
+        contentPanel.add(teacherView, "TEACHER");
 
         contentPanel.add(new RewardView(), "KT");
 
