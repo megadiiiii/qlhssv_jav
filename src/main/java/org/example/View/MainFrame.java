@@ -4,7 +4,7 @@ import org.example.Controller.*;
 import org.example.DAO.CohortDAO;
 import org.example.DAO.DisciplineDAO;
 import org.example.DAO.FacuDAO;
-import org.example.DAO.StudentDAO;
+//import org.example.DAO.StudentDAO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,10 +29,10 @@ public class MainFrame extends JFrame {
         HomepageView homepage = new HomepageView();
         contentPanel.add(homepage, "HOME");
 
-        StudentView studentView = new StudentView();
-        StudentDAO studentDAO = new StudentDAO();
-        new StudentController(studentView, this, studentDAO);
-        contentPanel.add(studentView, "SV");
+//        StudentView studentView = new StudentView();
+//        StudentDAO studentDAO = new StudentDAO();
+//        new StudentController(studentView, this, studentDAO);
+//        contentPanel.add(studentView, "SV");
 
         FacultiesView facuView = new FacultiesView();
         FacuDAO dao = new FacuDAO();
