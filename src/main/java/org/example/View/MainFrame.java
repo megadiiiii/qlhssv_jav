@@ -1,10 +1,7 @@
 package org.example.View;
 
 import org.example.Controller.*;
-import org.example.DAO.CohortDAO;
-import org.example.DAO.FacuDAO;
-import org.example.DAO.MajorDAO;
-import org.example.DAO.TeacherDAO;
+import org.example.DAO.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,7 +42,10 @@ public class MainFrame extends JFrame {
         contentPanel.add(majorView, "MAJOR");
 
 
-        contentPanel.add(new ClassView(), "CLASS");
+        ClassView classView = new ClassView();
+        ClassDAO classDAO = new ClassDAO();
+        new ClassController(classView, this, classDAO);
+        contentPanel.add(classView, "CLASS");
 
         CohortView cohortView = new CohortView();
         CohortDAO cohortDAO = new CohortDAO();

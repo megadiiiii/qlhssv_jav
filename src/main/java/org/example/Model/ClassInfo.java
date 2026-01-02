@@ -11,8 +11,12 @@ import lombok.Setter;
 @NoArgsConstructor
 
 public class ClassInfo {
-    String classId;
-    String className;
-    String majorId;
-    int cohort;
+    private String classId;
+    private String className;
+    private Faculties faculty;
+    private Major major;
+    private Teacher teacher;
+    private Cohort cohort;
+    private int studentCurrent;
+    private int studentMax;
 }

@@ -111,6 +111,7 @@ public class TeacherDAO {
         }
         return list;
     }
+
     // facu_name theo facu_id
     public String findFacultyNameById(String facuId) {
         String sql = "SELECT facu_name FROM faculties WHERE facu_id = ?";
@@ -128,6 +129,7 @@ public class TeacherDAO {
         }
         return "";
     }
+
     // them
     public void insert(Teacher t) throws SQLException {
         Connection conn = dbConn.getConnection();
@@ -142,6 +144,7 @@ public class TeacherDAO {
         ps.close();
         conn.close();
     }
+
     //xoa
     public int delete(String teacherId) throws SQLException {
         Connection conn = dbConn.getConnection();
@@ -155,6 +158,7 @@ public class TeacherDAO {
         conn.close();
         return row;
     }
+
     // sua
     public int update(Teacher t) throws SQLException {
         Connection conn = dbConn.getConnection();
@@ -170,4 +174,27 @@ public class TeacherDAO {
         conn.close();
         return row;
     }
+
+    public List<Teacher> findAllByFaculty(String facuId) {
+        List<Teacher> list = new ArrayList<>();
+        String sql = """
+                SELECT t.teacher_id, t.teacher_name, f.facu_id, f.facu_name 
+                FROM teacher t 
+                JOIN faculties f ON f.facu_id = t.facu_id 
+                WHERE f.facu_id = ?""";
+        try (Connection conn = dbConn.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, facuId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Teacher(
+                        rs.getString("teacher_id"),
+                        rs.getString("teacher_name")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }

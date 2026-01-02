@@ -8,6 +8,11 @@ public class Teacher {
 
     public Teacher() {}
 
+    public Teacher(String teacherId,  String teacherName) {
+        this.teacherId = teacherId;
+        this.teacherName = teacherName;
+    }
+
     public Teacher(String teacherId, String teacherName, String facuId, String facuName) {
         this.teacherId = teacherId;
         this.teacherName = teacherName;
@@ -26,4 +31,9 @@ public class Teacher {
 
     public String getFacuName() { return facuName; }
     public void setFacuName(String facuName) { this.facuName = facuName; }
+
+    @Override
+    public String toString() {
+        return teacherName;
+    }
 }

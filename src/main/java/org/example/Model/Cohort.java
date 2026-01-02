@@ -18,4 +18,14 @@ public class Cohort {
         this.cohortStartYear = start;
         this.cohortEndYear = end;
     }
+
+    public Cohort(int cohortId, String cohortName) {
+        this.cohortId = cohortId;
+        this.cohortName = cohortName;
+    }
+
+    @Override
+    public String toString() {
+        return cohortName;
+    }
 }

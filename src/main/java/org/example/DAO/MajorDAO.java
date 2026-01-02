@@ -152,4 +152,26 @@ public class MajorDAO {
 
         return list;
     }
+
+    public List<Major> findAllMajorsByFaculty(String facuId) {
+        List<Major> list = new ArrayList<>();
+        String sql = """
+                SELECT m.major_id, m.major_name, f.facu_id, f.facu_name
+                FROM major m LEFT JOIN faculties f ON f.facu_id = m.facu_id 
+                WHERE f.facu_id = ?
+                """;
+        try (Connection conn = dbConn.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, facuId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Faculties f = new Faculties(rs.getString("facu_id"), rs.getString("facu_name"));
+                list.add(new Major(rs.getString("major_id"), rs.getString("major_name"), f));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }
