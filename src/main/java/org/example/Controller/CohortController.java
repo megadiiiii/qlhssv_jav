@@ -1,11 +1,16 @@
 package org.example.Controller;
 
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.example.DAO.CohortDAO;
 import org.example.Model.Cohort;
 import org.example.View.CohortView;
 import org.example.View.MainFrame;
 
 import javax.swing.*;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 
 public class CohortController {
@@ -33,6 +38,8 @@ public class CohortController {
         view.btnCohortUpdate.addActionListener(e -> onUpdateCohort());
 
         view.btnSearch.addActionListener(e -> onSearchCohort());
+
+        view.btnExport.addActionListener(e -> onExport());
 
         view.btnBack.addActionListener(e -> {
             mainFrame.showView("HOME");
@@ -234,5 +241,94 @@ public class CohortController {
         view.txtCohortName.setText(view.table.getValueAt(row, 1).toString());
         view.txtCohortStartYear.setText(view.table.getValueAt(row, 2).toString());
         view.txtCohortEndYear.setText(view.table.getValueAt(row, 3).toString());
+    }
+
+    private void onExport() {
+        List<Cohort> cohortList = dao.getDataExport();
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
+        fileChooser.setSelectedFile(new File("DanhSachCohort.xlsx")); // tên mặc định
+        if (fileChooser.showSaveDialog(view) == JFileChooser.APPROVE_OPTION) {
+            java.io.File filePath = fileChooser.getSelectedFile();
+            try (Workbook workbook = new XSSFWorkbook()) {
+                Sheet sheet = workbook.createSheet("Danh sách khóa đào tạo");
+
+                // === TITLE ===
+                Row titleRow = sheet.createRow(0);
+                Cell titleCell = titleRow.createCell(0);
+                titleCell.setCellValue("BẢNG DANH SÁCH KHÓA ĐÀO TẠO");
+
+                // Style title
+                CellStyle titleStyle = workbook.createCellStyle();
+                Font titleFont = workbook.createFont();
+                titleFont.setBold(true);
+                titleFont.setFontHeightInPoints((short) 16);
+                titleStyle.setFont(titleFont);
+                titleStyle.setAlignment(HorizontalAlignment.CENTER);
+                titleCell.setCellStyle(titleStyle);
+
+                // Merge title across all columns
+                sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 3));
+
+                // === HEADER ===
+                Row headerRow = sheet.createRow(1);
+                String[] headers = {"STT", "Tên khóa", "Năm bắt đầu", "Năm kết thúc"};
+                CellStyle headerStyle = workbook.createCellStyle();
+                Font headerFont = workbook.createFont();
+                headerFont.setBold(true);
+                headerStyle.setFont(headerFont);
+                headerStyle.setAlignment(HorizontalAlignment.CENTER);
+                headerStyle.setBorderBottom(BorderStyle.THIN);
+                headerStyle.setBorderTop(BorderStyle.THIN);
+                headerStyle.setBorderLeft(BorderStyle.THIN);
+                headerStyle.setBorderRight(BorderStyle.THIN);
+
+                for (int i = 0; i < headers.length; i++) {
+                    Cell cell = headerRow.createCell(i);
+                    cell.setCellValue(headers[i]);
+                    cell.setCellStyle(headerStyle);
+                }
+
+                // === DATA ===
+                CellStyle dataStyle = workbook.createCellStyle();
+                dataStyle.setBorderBottom(BorderStyle.THIN);
+                dataStyle.setBorderTop(BorderStyle.THIN);
+                dataStyle.setBorderLeft(BorderStyle.THIN);
+                dataStyle.setBorderRight(BorderStyle.THIN);
+
+                int no = 1; //STT
+                int rowIndex = 2;
+                for (Cohort c : cohortList) {
+                    Row row = sheet.createRow(rowIndex++);
+                    Cell cell0 = row.createCell(0);
+                    cell0.setCellValue(no++);
+                    cell0.setCellStyle(dataStyle);
+
+                    Cell cell1 = row.createCell(1);
+                    cell1.setCellValue(c.getCohortName());
+                    cell1.setCellStyle(dataStyle);
+
+                    Cell cell2 = row.createCell(2);
+                    cell2.setCellValue(c.getCohortStartYear());
+                    cell2.setCellStyle(dataStyle);
+
+                    Cell cell3 = row.createCell(3);
+                    cell3.setCellValue(c.getCohortEndYear());
+                    cell3.setCellStyle(dataStyle);
+                }
+
+                // Auto-size columns
+                // Ghi file
+                try (FileOutputStream fos = new FileOutputStream(filePath)) {
+                    workbook.write(fos);
+                }
+
+                JOptionPane.showMessageDialog(view, "Xuất Excel thành công!");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(view, "Xuất Excel thất bại: " + ex.getMessage());
+            }
+        }
     }
 }

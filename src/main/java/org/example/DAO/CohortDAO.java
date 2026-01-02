@@ -32,6 +32,27 @@ public class CohortDAO {
         return list;
     }
 
+    public List<Cohort> getDataExport() {
+        List<Cohort> list = new ArrayList<>();
+        String sql = "SELECT cohort_name, cohort_start_year, cohort_end_year FROM cohort";
+
+        try {
+            Connection conn = dbConn.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Cohort(
+                        rs.getString("cohort_name"),
+                        rs.getInt("cohort_start_year"),
+                        rs.getInt("cohort_end_year")
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public int insert(Cohort c) {
         String sql = """
                 insert into cohort (cohort_name, cohort_start_year, cohort_end_year) values (?, ?, ?);

@@ -2,6 +2,7 @@ package org.example.Controller;
 
 import org.example.DAO.RewardDAO;
 import org.example.Model.Reward;
+import org.example.View.MainFrame;
 import org.example.View.RewardView;
 
 import javax.swing.*;
@@ -13,9 +14,9 @@ import java.util.Objects;
 public class RewardController {
     private final RewardView view;
     private final RewardDAO dao;
-    public RewardController(RewardView view) {
+    public RewardController(RewardView view, MainFrame mainFrame, RewardDAO dao) {
         this.view = view;
-        this.dao = new RewardDAO();
+        this.dao = dao;
 
         loadStudentCombo();
         loadTable();

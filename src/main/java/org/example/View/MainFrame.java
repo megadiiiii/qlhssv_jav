@@ -26,8 +26,10 @@ public class MainFrame extends JFrame {
         HomepageView homepage = new HomepageView();
         contentPanel.add(homepage, "HOME");
 
-
-//        contentPanel.add(new StudentView(), "SV");
+//        StudentView studentView = new StudentView();
+//        StudentDAO studentDAO = new StudentDAO();
+//        new StudentController(studentView, this, studentDAO);
+//        contentPanel.add(studentView, "SV");
 
         FacultiesView facuView = new FacultiesView();
         FacuDAO dao = new FacuDAO();
@@ -57,7 +59,10 @@ public class MainFrame extends JFrame {
         new TeacherController(teacherView, this, teacherDAO);
         contentPanel.add(teacherView, "TEACHER");
 
-        contentPanel.add(new RewardView(), "KT");
+        RewardView rewardView = new RewardView();
+        RewardDAO rewardDAO = new RewardDAO();
+        new RewardController(rewardView, this, rewardDAO);
+        contentPanel.add(rewardView, "KT");
 
         contentPanel.add(new RewardView(), "KL");
 

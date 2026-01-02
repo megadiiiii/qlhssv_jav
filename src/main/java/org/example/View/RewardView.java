@@ -77,7 +77,7 @@ public class RewardView extends JPanel {
 
         lblRewardDate = new JLabel("Ngày");
         dcRewardDate = new JDateChooser();
-        dcRewardDate.setDateFormatString("yyyy-MM-dd");
+        dcRewardDate.setDateFormatString("dd/MM/yyyy");
         dcRewardDate.setDate(new Date());
 
         lblRewardQuyetDinh = new JLabel("Quyết định");

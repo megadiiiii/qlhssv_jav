@@ -133,7 +133,7 @@ public class MajorController {
     private void updateMajor() {
         int row = view.table.getSelectedRow();
         if (row < 0) {
-            JOptionPane.showMessageDialog(view, "Vui lòng chọn chuyên ngành để xóa");
+            JOptionPane.showMessageDialog(view, "Vui lòng chọn chuyên ngành để cập nhật");
             return;
         }
 

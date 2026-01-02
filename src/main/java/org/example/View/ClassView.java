@@ -154,12 +154,7 @@ public class ClassView extends JPanel {
         s.weightx = 1.5;
         formSearch.add(cboCohortSearch = new JComboBox<>(), s);
 
-        s.gridx = 6;
-        s.weightx = 0;
-        formSearch.add(new JLabel("GVCN/CVHT"), s);
-        s.gridx = 7;
-        s.weightx = 2.5;
-        formSearch.add(cboTeacherSearch = new JComboBox<>(), s);
+
 
         // Row 1
         s.gridy = 1;
@@ -176,6 +171,13 @@ public class ClassView extends JPanel {
         s.gridx = 3;
         s.weightx = 0.5;
         formSearch.add(txtClassNameSearch = new JTextField(10), s);
+
+        s.gridx = 4;
+        s.weightx = 0;
+        formSearch.add(new JLabel("GVCN/CVHT"), s);
+        s.gridx = 5;
+        s.weightx = 2.5;
+        formSearch.add(cboTeacherSearch = new JComboBox<>(), s);
 
         // ===== Button bar =====
         JPanel btnBar = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 6));

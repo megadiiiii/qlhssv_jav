@@ -50,7 +50,7 @@ public class RewardDAO {
 
     public List<String> getStudentIds() {
         List<String> list = new ArrayList<>();
-        String sql = "SELECT student_id FROM student";
+        String sql = "select student_id from student";
 
         try (Connection c = dbConn.getConnection();
              PreparedStatement ps = c.prepareStatement(sql);

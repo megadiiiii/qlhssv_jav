@@ -16,7 +16,7 @@ public class CohortView extends JPanel {
 
     //
     //BUTTONS (5 nút 1 khu)
-    public JButton btnCohortAdd, btnCohortUpdate, btnCohortDelete, btnSearch, btnBack;
+    public JButton btnCohortAdd, btnCohortUpdate, btnCohortDelete, btnSearch, btnExport, btnBack;
 
     //
     //TABLE
@@ -117,12 +117,14 @@ public class CohortView extends JPanel {
         btnCohortUpdate = new JButton("Sửa");
         btnCohortDelete = new JButton("Xóa");
         btnSearch = new JButton("Tìm");
+        btnExport = new JButton("Xuất Excel");
         btnBack = new JButton("Quay lại");
 
         btnBar.add(btnCohortAdd);
         btnBar.add(btnCohortUpdate);
         btnBar.add(btnCohortDelete);
         btnBar.add(btnSearch);
+        btnBar.add(btnExport);
         btnBar.add(btnBack);
 
         wrapper.add(formCrud, BorderLayout.NORTH);

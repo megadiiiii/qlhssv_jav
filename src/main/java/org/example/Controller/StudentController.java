@@ -286,25 +286,25 @@
 //        String facuName = String.valueOf(view.model.getValueAt(row, 8));
 //        String majorName = String.valueOf(view.model.getValueAt(row, 7));
 //
-//        // Chọn Khoa theo tên
-//        for (int i = 0; i < view.sfp.currentFacuList.size(); i++) {
-//            if (view.sfp.currentFacuList.get(i).getFacuName().equals(facuName)) {
-//                view.sfp.cboFacu.setSelectedIndex(i);
-//                String facuId = view.sfp.currentFacuList.get(i).getFacuId();
-//                view.sfp.loadMajorCombo(facuId);
-//                break;
-//            }
-//        }
-//
-//        // Chọn Ngành theo tên
-//        for (int i = 0; i < view.sfp.currentMajorList.size(); i++) {
-//            if (view.sfp.currentMajorList.get(i).getMajorName().equals(majorName)) {
-//                view.sfp.cboMajor.setSelectedIndex(i);
-//                String majorId = view.sfp.currentMajorList.get(i).getMajorId();
-//                view.sfp.loadClassCombo(majorId);
-//                break;
-//            }
-//        }
+////        // Chọn Khoa theo tên
+////        for (int i = 0; i < view.sfp.currentFacuList.size(); i++) {
+////            if (view.sfp.currentFacuList.get(i).getFacuName().equals(facuName)) {
+////                view.sfp.cboFacu.setSelectedIndex(i);
+////                String facuId = view.sfp.currentFacuList.get(i).getFacuId();
+////                view.sfp.loadMajorCombo(facuId);
+////                break;
+////            }
+////        }
+////
+////        // Chọn Ngành theo tên
+////        for (int i = 0; i < view.sfp.currentMajorList.size(); i++) {
+////            if (view.sfp.currentMajorList.get(i).getMajorName().equals(majorName)) {
+////                view.sfp.cboMajor.setSelectedIndex(i);
+////                String majorId = view.sfp.currentMajorList.get(i).getMajorId();
+////                view.sfp.loadClassCombo(majorId);
+////                break;
+////            }
+////        }
 //
 //        // Chọn Lớp theo tên
 //        for (int i = 0; i < view.sfp.currentClassList.size(); i++) {
