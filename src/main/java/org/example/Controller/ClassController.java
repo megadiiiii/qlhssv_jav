@@ -1,11 +1,16 @@
 package org.example.Controller;
 
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.example.DAO.*;
 import org.example.Model.*;
 import org.example.View.ClassView;
 import org.example.View.MainFrame;
 
 import javax.swing.*;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 
 public class ClassController {
@@ -25,7 +30,7 @@ public class ClassController {
     }
 
     private void loadTable() {
-        List<ClassInfo> classList = classDAO.findAllClasses();
+        List<ClassInfo> classList = classDAO.getAllClasses();
 
         view.model.setRowCount(0);
         for (ClassInfo c : classList) {
@@ -94,7 +99,6 @@ public class ClassController {
             view.cboCohort.addItem(c);
             view.cboCohortSearch.addItem(c);
         }
-        ;
 
         view.cboFacu.addActionListener(e -> {
             if (isAddingNew) updateClassId_ClassName();
@@ -159,6 +163,8 @@ public class ClassController {
 
         view.btnSearch.addActionListener(e -> onSearch());
 
+        view.btnExport.addActionListener(e -> onExport());
+
         view.btnBack.addActionListener(e -> {
             mainFrame.showView("HOME");
         });
@@ -182,8 +188,7 @@ public class ClassController {
         if (facu.getFacuId().isEmpty() || major.getMajorId().isEmpty() || cohort.getCohortId() == 0)
             return "";
 
-        String majorShort = major.getMajorId().replaceAll("\\s+", "");
-        majorShort = majorShort.length() >= 2 ? majorShort.substring(0, 2).toUpperCase() : majorShort.toUpperCase();
+        String majorShort = major.getMajorId();
 
         String cohortStr = String.valueOf(cohort.getCohortName());
         cohortStr = cohortStr.length() > 2 ? cohortStr.substring(cohortStr.length() - 2) : cohortStr;
@@ -348,19 +353,19 @@ public class ClassController {
         try {
             List<ClassInfo> result = classDAO.search(classId, className, facu, major, cohort, teacher);
 
-                view.model.setRowCount(0);
-                for (ClassInfo c : result) {
-                    view.model.addRow(new Object[]{
-                            c.getClassId(),
-                            c.getClassName(),
-                            c.getCohort().getCohortName(),
-                            c.getMajor().getMajorName(),
-                            c.getFaculty().getFacuName(),
-                            c.getTeacher().getTeacherName(),
-                            c.getStudentCurrent(),
-                            c.getStudentMax()
-                    });
-                }
+            view.model.setRowCount(0);
+            for (ClassInfo c : result) {
+                view.model.addRow(new Object[]{
+                        c.getClassId(),
+                        c.getClassName(),
+                        c.getCohort().getCohortName(),
+                        c.getMajor().getMajorName(),
+                        c.getFaculty().getFacuName(),
+                        c.getTeacher().getTeacherName(),
+                        c.getStudentCurrent(),
+                        c.getStudentMax()
+                });
+            }
 
             if (result.isEmpty()) {
                 JOptionPane.showMessageDialog(view, "Không tìm thấy kết quả");
@@ -375,6 +380,130 @@ public class ClassController {
         }
     }
 
+    private void onExport() {
+        List<ClassInfo> classesList = classDAO.getAllClasses();
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
+        fileChooser.setSelectedFile(new File("Danh_sach_lop.xlsx")); //
+        if (fileChooser.showSaveDialog(view) == JFileChooser.APPROVE_OPTION) {
+            java.io.File filePath = fileChooser.getSelectedFile();
+            try (Workbook workbook = new XSSFWorkbook()) {
+                Sheet sheet = workbook.createSheet("Danh sách lớp");
+
+                // === TITLE ===
+                Row titleRow = sheet.createRow(0);
+                Cell titleCell = titleRow.createCell(0);
+                titleCell.setCellValue("DANH SÁCH LỚP");
+
+                // Style title
+                CellStyle titleStyle = workbook.createCellStyle();
+                Font titleFont = workbook.createFont();
+                titleFont.setBold(true);
+                titleFont.setFontHeightInPoints((short) 16);
+                titleStyle.setFont(titleFont);
+                titleStyle.setAlignment(HorizontalAlignment.CENTER);
+                titleCell.setCellStyle(titleStyle);
+
+                // Merge title across all columns
+                sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 8));
+
+                // === HEADER ===
+                Row headerRow = sheet.createRow(1);
+                String[] headers = {"STT", "Mã lớp", "Tên lớp", "Khóa", "Chuyên ngành", "Khoa", "GVCN/CVHT", "Số SV hiện tại", "Số SV tối đa"};
+                CellStyle headerStyle = workbook.createCellStyle();
+                Font headerFont = workbook.createFont();
+                headerFont.setBold(true);
+                headerStyle.setFont(headerFont);
+                headerStyle.setAlignment(HorizontalAlignment.CENTER);
+                headerStyle.setBorderBottom(BorderStyle.THIN);
+                headerStyle.setBorderTop(BorderStyle.THIN);
+                headerStyle.setBorderLeft(BorderStyle.THIN);
+                headerStyle.setBorderRight(BorderStyle.THIN);
+
+                for (int i = 0; i < headers.length; i++) {
+                    Cell cell = headerRow.createCell(i);
+                    cell.setCellValue(headers[i]);
+                    cell.setCellStyle(headerStyle);
+                }
+
+                // === DATA ===
+                CellStyle dataStyle = workbook.createCellStyle();
+                dataStyle.setBorderBottom(BorderStyle.THIN);
+                dataStyle.setBorderTop(BorderStyle.THIN);
+                dataStyle.setBorderLeft(BorderStyle.THIN);
+                dataStyle.setBorderRight(BorderStyle.THIN);
+
+                int no = 1; //STT
+                int rowIndex = 2;
+                for (ClassInfo c : classesList) {
+                    Row row = sheet.createRow(rowIndex++);
+                    Cell cell0 = row.createCell(0);
+                    cell0.setCellValue(no++);
+                    cell0.setCellStyle(dataStyle);
+
+                    Cell cell1 = row.createCell(1);
+                    cell1.setCellValue(c.getClassId());
+                    cell1.setCellStyle(dataStyle);
+
+                    Cell cell2 = row.createCell(2);
+                    cell2.setCellValue(c.getClassName());
+                    cell2.setCellStyle(dataStyle);
+
+                    Cell cell3 = row.createCell(3);
+                    cell3.setCellValue(c.getCohort().getCohortName());
+                    cell3.setCellStyle(dataStyle);
+
+                    Cell cell4 = row.createCell(4);
+                    cell4.setCellValue(c.getMajor().getMajorName());
+                    cell4.setCellStyle(dataStyle);
+
+                    Cell cell5 = row.createCell(5);
+                    cell5.setCellValue(c.getFaculty().getFacuName());
+                    cell5.setCellStyle(dataStyle);
+
+                    Cell cell6 = row.createCell(6);
+                    cell6.setCellValue(c.getTeacher().getTeacherName());
+                    cell6.setCellStyle(dataStyle);
+
+                    Cell cell7 = row.createCell(7);
+                    cell7.setCellValue(c.getStudentCurrent());
+                    cell7.setCellStyle(dataStyle);
+
+                    Cell cell8 = row.createCell(8);
+                    cell8.setCellValue(c.getStudentMax());
+                    cell8.setCellStyle(dataStyle);
+                }
+
+                // === AUTO FILTER ===
+                sheet.setAutoFilter(new CellRangeAddress(
+                        1,
+                        sheet.getLastRowNum(),
+                        0,
+                        headers.length - 1
+                ));
+
+                // === FREEZE HEADER (title + header) ===
+                sheet.createFreezePane(0, 2);
+
+                // === AUTO SIZE COLUMNS ===
+                for (int i = 0; i < headers.length; i++) {
+                    sheet.autoSizeColumn(i);
+                }
+
+                // Auto-size columns
+                // Ghi file
+                try (FileOutputStream fos = new FileOutputStream(filePath)) {
+                    workbook.write(fos);
+                }
+
+                JOptionPane.showMessageDialog(view, "Xuất Excel thành công!");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(view, "Xuất Excel thất bại: " + ex.getMessage());
+            }
+        }
+    }
 
     private void onRowSelected() {
         int row = view.table.getSelectedRow();

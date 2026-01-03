@@ -26,7 +26,7 @@ public class ClassView extends JPanel {
     public JTextField txtClassIdSearch, txtClassNameSearch;
 
     // ===== BUTTONS (5 nút 1 khu) =====
-    public JButton btnAdd, btnDelete, btnUpdate, btnSearch, btnBack;
+    public JButton btnAdd, btnDelete, btnUpdate, btnSearch, btnBack, btnExport;
 
     // ===== TABLE =====
     public DefaultTableModel model;
@@ -185,11 +185,13 @@ public class ClassView extends JPanel {
         btnUpdate = new JButton("Sửa");
         btnDelete = new JButton("Xóa");
         btnSearch = new JButton("Tìm");
+        btnExport = new JButton("Xuất Excel");
         btnBack = new JButton("Quay lại");
         btnBar.add(btnAdd);
         btnBar.add(btnUpdate);
         btnBar.add(btnDelete);
         btnBar.add(btnSearch);
+        btnBar.add(btnExport);
         btnBar.add(btnBack);
 
         // ===== Add panels to wrapper =====

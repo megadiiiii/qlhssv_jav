@@ -29,7 +29,7 @@ public class LoginController {
                 return;
             }
 
-            Account account = null;
+            Account account;
             try {
                 account = dao.login(username, password);
 
@@ -37,13 +37,12 @@ public class LoginController {
                     JOptionPane.showMessageDialog(view,
                             "Xin chào " + account.getName());
                     view.dispose();
-                    new MainFrame(     ).setVisible(true);
+                    new MainFrame().setVisible(true);
                 } else {
-                    JOptionPane.showMessageDialog(view,
-                            "Sai username hoặc password");
+                    JOptionPane.showMessageDialog(view, "Sai username hoặc password");
                 }
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         });
     }

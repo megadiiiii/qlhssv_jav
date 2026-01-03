@@ -23,7 +23,7 @@ public class RewardView extends JPanel {
 
     public JLabel lblRewardId, lblStudentId, lblStudentName, lblRewardDate, lblRewardNote, lblRewardQuyetDinh;
 
-    public JButton btnAddReward, btnDeleteReward, btnEditReward, btnBack;
+    public JButton btnAddReward, btnDeleteReward, btnEditReward, btnExportReward, btnSearchReward, btnBack;
 
     // bảng
     public DefaultTableModel model;
@@ -92,6 +92,8 @@ public class RewardView extends JPanel {
         btnAddReward = new JButton("Thêm");
         btnDeleteReward = new JButton("Xóa");
         btnEditReward = new JButton("Sửa");
+        btnExportReward = new JButton("Xuất Excel");
+        btnSearchReward = new JButton("Tìm kiếm");
         btnBack = new JButton("Quay lại");
 
         layout.setHorizontalGroup(
@@ -116,6 +118,8 @@ public class RewardView extends JPanel {
                                         .addComponent(btnAddReward)
                                         .addComponent(btnDeleteReward)
                                         .addComponent(btnEditReward)
+                                        .addComponent(btnExportReward)
+                                        .addComponent(btnSearchReward)
                                         .addComponent(btnBack)
                                 )
                         )
@@ -151,6 +155,8 @@ public class RewardView extends JPanel {
                                 .addComponent(btnAddReward)
                                 .addComponent(btnDeleteReward)
                                 .addComponent(btnEditReward)
+                                .addComponent(btnExportReward)
+                                .addComponent(btnSearchReward)
                                 .addComponent(btnBack)
                         )
         );
@@ -172,6 +178,11 @@ public class RewardView extends JPanel {
         table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 16));
         table.getTableHeader().setBackground(Color.LIGHT_GRAY);
         table.getTableHeader().setForeground(Color.BLACK);
+
+        // Ẩn cột ID
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setWidth(0);
 
         scrollPane = new JScrollPane(table);
 

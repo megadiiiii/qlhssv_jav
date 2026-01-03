@@ -57,7 +57,6 @@ public class MajorController {
                     m.getMajorName()
             });
         }
-
     }
 
     private void onRowSelected() {

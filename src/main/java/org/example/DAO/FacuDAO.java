@@ -73,4 +73,50 @@ public class FacuDAO {
             return 0;
         }
     }
+
+    public List<Faculties> searchFacu(String facuId, String facuName) {
+        List<Faculties> list = new ArrayList<>();
+
+        StringBuilder sql = new StringBuilder("""
+        SELECT *
+        FROM faculties
+        WHERE 1=1
+    """);
+
+        if (facuId != null && !facuId.trim().isEmpty()) {
+            sql.append(" AND facu_id LIKE ?");
+        }
+
+        if (facuName != null && !facuName.trim().isEmpty()) {
+            sql.append(" AND facu_name LIKE ?");
+        }
+
+        try (Connection conn = dbConn.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            int idx = 1;
+
+            if (facuId != null && !facuId.trim().isEmpty()) {
+                ps.setString(idx++, "%" + facuId.trim() + "%");
+            }
+
+            if (facuName != null && !facuName.trim().isEmpty()) {
+                ps.setString(idx++, "%" + facuName.trim() + "%");
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Faculties f = new Faculties();
+                f.setFacuId(rs.getString("facu_id"));
+                f.setFacuName(rs.getString("facu_name"));
+                list.add(f);
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return list;
+    }
+
 }

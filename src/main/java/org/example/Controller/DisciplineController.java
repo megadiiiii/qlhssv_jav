@@ -1,19 +1,26 @@
 package org.example.Controller;
 
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.example.DAO.DisciplineDAO;
 import org.example.Model.Discipline;
 import org.example.View.DisciplineView;
 import org.example.View.MainFrame;
 
 import javax.swing.*;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class DisciplineController {
 
     private DisciplineView view;
     private DisciplineDAO dao;
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
     public DisciplineController(DisciplineView view, MainFrame mainFrame, DisciplineDAO dao) {
         this.view = view;
@@ -40,8 +47,8 @@ public class DisciplineController {
                     d.getStudentId(),
                     d.getStudentName(),
                     d.getHinhThuc(),
-                    d.getKyluatDate(),
-                    d.getNgayKetThuc(),
+                    sdf.format(d.getKyluatDate()),
+                    sdf.format(d.getNgayKetThuc()),
                     d.getSoQuyetDinh(),
                     d.getLyDo()
             });
@@ -68,9 +75,17 @@ public class DisciplineController {
                 (JTextField) view.cboMaSinhVien.getEditor().getEditorComponent();
 
         editor.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-            public void insertUpdate(javax.swing.event.DocumentEvent e) { fillStudentName(); }
-            public void removeUpdate(javax.swing.event.DocumentEvent e) { fillStudentName(); }
-            public void changedUpdate(javax.swing.event.DocumentEvent e) { fillStudentName(); }
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                fillStudentName();
+            }
+
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                fillStudentName();
+            }
+
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                fillStudentName();
+            }
         });
     }
 
@@ -143,6 +158,11 @@ public class DisciplineController {
                 ex.printStackTrace();
             }
         });
+
+        view.btnQuayLai.addActionListener(e -> mainFrame.showView("HOME"));
+
+        view.btnTimKiem.addActionListener(e -> onSearch());
+        view.btnExport.addActionListener(e -> onExport());
     }
 
     // cellclick
@@ -194,5 +214,130 @@ public class DisciplineController {
 
     private String emptyToNull(String s) {
         return (s == null || s.trim().isEmpty()) ? null : s.trim();
+    }
+
+    private void onSearch() {
+    }
+
+    private void onExport() {
+        List<Discipline> disciplineList = dao.findAll();
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
+        fileChooser.setSelectedFile(new File("Danh_sach_ki_luat.xlsx")); //
+        if (fileChooser.showSaveDialog(view) == JFileChooser.APPROVE_OPTION) {
+            java.io.File filePath = fileChooser.getSelectedFile();
+            try (Workbook workbook = new XSSFWorkbook()) {
+                Sheet sheet = workbook.createSheet("Danh sách kỉ luật");
+
+                // === TITLE ===
+                Row titleRow = sheet.createRow(0);
+                Cell titleCell = titleRow.createCell(0);
+                titleCell.setCellValue("DANH SÁCH KỈ LUẬT");
+
+                // Style title
+                CellStyle titleStyle = workbook.createCellStyle();
+                Font titleFont = workbook.createFont();
+                titleFont.setBold(true);
+                titleFont.setFontHeightInPoints((short) 16);
+                titleStyle.setFont(titleFont);
+                titleStyle.setAlignment(HorizontalAlignment.CENTER);
+                titleCell.setCellStyle(titleStyle);
+
+                // Merge title across all columns
+                sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 7));
+
+                // === HEADER ===
+                Row headerRow = sheet.createRow(1);
+                String[] headers = {"STT", "Mã sinh viên", "Tên sinh viên", "Hình thức",
+                        "Ngày kỷ luật", "Ngày kết thúc", "Số quyết định", "Lý do"};
+                CellStyle headerStyle = workbook.createCellStyle();
+                Font headerFont = workbook.createFont();
+                headerFont.setBold(true);
+                headerStyle.setFont(headerFont);
+                headerStyle.setAlignment(HorizontalAlignment.CENTER);
+                headerStyle.setBorderBottom(BorderStyle.THIN);
+                headerStyle.setBorderTop(BorderStyle.THIN);
+                headerStyle.setBorderLeft(BorderStyle.THIN);
+                headerStyle.setBorderRight(BorderStyle.THIN);
+
+                for (int i = 0; i < headers.length; i++) {
+                    Cell cell = headerRow.createCell(i);
+                    cell.setCellValue(headers[i]);
+                    cell.setCellStyle(headerStyle);
+                }
+
+                // === DATA ===
+                CellStyle dataStyle = workbook.createCellStyle();
+                dataStyle.setBorderBottom(BorderStyle.THIN);
+                dataStyle.setBorderTop(BorderStyle.THIN);
+                dataStyle.setBorderLeft(BorderStyle.THIN);
+                dataStyle.setBorderRight(BorderStyle.THIN);
+
+                int no = 1; //STT
+                int rowIndex = 2;
+                for (Discipline dc : disciplineList) {
+                    Row row = sheet.createRow(rowIndex++);
+                    Cell cell0 = row.createCell(0);
+                    cell0.setCellValue(no++);
+                    cell0.setCellStyle(dataStyle);
+
+                    Cell cell1 = row.createCell(1);
+                    cell1.setCellValue(dc.getStudentId());
+                    cell1.setCellStyle(dataStyle);
+
+                    Cell cell2 = row.createCell(2);
+                    cell2.setCellValue(dc.getStudentName());
+                    cell2.setCellStyle(dataStyle);
+
+                    Cell cell3 = row.createCell(3);
+                    cell3.setCellValue(dc.getHinhThuc());
+                    cell3.setCellStyle(dataStyle);
+
+                    Cell cell4 = row.createCell(4);
+                    cell4.setCellValue((sdf.format(dc.getKyluatDate())));
+                    cell4.setCellStyle(dataStyle);
+
+                    Cell cell5 = row.createCell(5);
+                    cell5.setCellValue((sdf.format(dc.getNgayKetThuc())));
+                    cell5.setCellStyle(dataStyle);
+
+                    Cell cell6 = row.createCell(6);
+                    cell6.setCellValue(dc.getSoQuyetDinh());
+                    cell6.setCellStyle(dataStyle);
+
+                    Cell cell7 = row.createCell(7);
+                    cell7.setCellValue(dc.getLyDo());
+                    cell7.setCellStyle(dataStyle);
+                }
+
+                // === AUTO FILTER ===
+                sheet.setAutoFilter(new CellRangeAddress(
+                        1,
+                        sheet.getLastRowNum(),
+                        0,
+                        headers.length - 1
+                ));
+
+                // === FREEZE HEADER (title + header) ===
+                sheet.createFreezePane(0, 2);
+
+                // === AUTO SIZE COLUMNS ===
+                for (int i = 0; i < headers.length; i++) {
+                    sheet.autoSizeColumn(i);
+                }
+
+                // Auto-size columns
+                // Ghi file
+                try (FileOutputStream fos = new FileOutputStream(filePath)) {
+                    workbook.write(fos);
+                }
+
+                JOptionPane.showMessageDialog(view, "Xuất Excel thành công!");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(view, "Xuất Excel thất bại: " + ex.getMessage());
+            }
+        }
     }
 }

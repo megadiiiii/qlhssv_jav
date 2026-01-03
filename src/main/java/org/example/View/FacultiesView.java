@@ -12,7 +12,7 @@ public class FacultiesView extends JPanel {
     public JTextField txtFacuIdSearch, txtFacuNameSearch;
 
     //BUTTONS (5 nút 1 khu)
-    public JButton btnFacuAdd, btnFacuUpdate, btnFacuDelete, btnSearch, btnBack;
+    public JButton btnFacuAdd, btnFacuUpdate, btnFacuDelete, btnSearch, btnBack, btnFacuExport;
 
     //
     //TABLE
@@ -109,12 +109,14 @@ public class FacultiesView extends JPanel {
         btnFacuUpdate = new JButton("Cập nhật");
         btnFacuDelete = new JButton("Xóa");
         btnSearch = new JButton("Tìm");
+        btnFacuExport = new JButton("Xuất Excel");
         btnBack = new JButton("Quay lại");
 
         btnBar.add(btnFacuAdd);
         btnBar.add(btnFacuUpdate);
         btnBar.add(btnFacuDelete);
         btnBar.add(btnSearch);
+        btnBar.add(btnFacuExport);
         btnBar.add(btnBack);
 
         wrapper.add(formCrud, BorderLayout.NORTH);

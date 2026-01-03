@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClassDAO {
-    public List<ClassInfo> findAllClasses() {
+    public List<ClassInfo> getAllClasses() {
         List<ClassInfo> classList = new ArrayList<>();
         String sql = """
                     SELECT c.*, m.facu_id, f.facu_name, m.major_name, t.teacher_name, ch.cohort_name
@@ -239,6 +239,48 @@ public class ClassDAO {
                 classInfo.setFaculty(f);
 
                 list.add(classInfo);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<ClassInfo> findAllClassesByMajors(String majorId) {
+        List<ClassInfo> list = new ArrayList<>();
+        String sql = """
+                    select 
+                        c.class_id, c.class_name,
+                        ch.cohort_id, ch.cohort_name,
+                        m.major_id, m.major_name
+                    from class c
+                    join cohort ch on ch.cohort_id = c.cohort_id
+                    join major m on m.major_id = c.major_id
+                    where c.major_id = ?
+                """;
+        try (Connection conn = dbConn.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, majorId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Major major = new Major(
+                        rs.getString("major_id"),
+                        rs.getString("major_name")
+                );
+
+                Cohort cohort = new Cohort(
+                        rs.getInt("cohort_id"),
+                        rs.getString("cohort_name")
+                );
+
+                ClassInfo c = new ClassInfo(
+                        rs.getString("class_id"),
+                        rs.getString("class_name"),
+                        cohort,
+                        major
+                );
+
+                list.add(c);
             }
         } catch (Exception e) {
             e.printStackTrace();

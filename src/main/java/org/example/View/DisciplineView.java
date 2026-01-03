@@ -22,7 +22,7 @@ public class DisciplineView extends JPanel {
     public JLabel lblIdKyLuat, lblHinhThuc, lblNgayKyLuat, lblLyDo, lblNgayKetThuc,
             lblSoQuyetDinh, lblMaSinhVien, lblTenSinhVien;
 
-    public JButton btnThem, btnXoa, btnSua, btnQuayLai;
+    public JButton btnThem, btnXoa, btnSua, btnQuayLai, btnTimKiem, btnExport;
 
     public DefaultTableModel model;
     public JScrollPane scrollPane;
@@ -94,6 +94,8 @@ public class DisciplineView extends JPanel {
         btnThem = new JButton("Thêm");
         btnXoa = new JButton("Xóa");
         btnSua = new JButton("Sửa");
+        btnTimKiem = new JButton("Tìm kiếm");
+        btnExport = new JButton("Xuất Excel");
         btnQuayLai = new JButton("Quay lại");
 
         // Fix chiều cao date
@@ -128,6 +130,8 @@ public class DisciplineView extends JPanel {
                                         .addComponent(btnThem)
                                         .addComponent(btnXoa)
                                         .addComponent(btnSua)
+                                        .addComponent(btnTimKiem)
+                                        .addComponent(btnExport)
                                         .addComponent(btnQuayLai)
                                 )
                         )
@@ -173,6 +177,8 @@ public class DisciplineView extends JPanel {
                                 .addComponent(btnThem)
                                 .addComponent(btnXoa)
                                 .addComponent(btnSua)
+                                .addComponent(btnTimKiem)
+                                .addComponent(btnExport)
                                 .addComponent(btnQuayLai)
                         )
         );
@@ -184,7 +190,7 @@ public class DisciplineView extends JPanel {
     private void tableInit() {
         model = new DefaultTableModel(
                 new String[]{
-                        "Mã kỷ luật", "Mã sinh viên","Tên sinh viên", "Hình thức",
+                        "Mã kỷ luật", "Mã sinh viên", "Tên sinh viên", "Hình thức",
                         "Ngày kỷ luật", "Ngày kết thúc", "Số quyết định", "Lý do"
                 }, 0
         );

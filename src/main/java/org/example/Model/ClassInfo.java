@@ -19,4 +19,21 @@ public class ClassInfo {
     private Cohort cohort;
     private int studentCurrent;
     private int studentMax;
+
+    public ClassInfo(String classId, String className, Cohort cohort, Major major) {
+        this.classId = classId;
+        this.className = className;
+        this.cohort = cohort;
+        this.major = major;
+    }
+
+    public ClassInfo(String classId, String className) {
+        this.classId = classId;
+        this.className = className;
+    }
+
+    @Override
+    public String toString() {
+        return className;
+    }
 }

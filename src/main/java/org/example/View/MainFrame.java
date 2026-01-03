@@ -2,6 +2,7 @@ package org.example.View;
 
 import org.example.Controller.*;
 import org.example.DAO.*;
+import org.example.Model.Discipline;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,10 +27,10 @@ public class MainFrame extends JFrame {
         HomepageView homepage = new HomepageView();
         contentPanel.add(homepage, "HOME");
 
-//        StudentView studentView = new StudentView();
-//        StudentDAO studentDAO = new StudentDAO();
-//        new StudentController(studentView, this, studentDAO);
-//        contentPanel.add(studentView, "SV");
+        StudentView studentView = new StudentView();
+        StudentDAO studentDAO = new StudentDAO();
+        new StudentController(studentView, this, studentDAO);
+        contentPanel.add(studentView, "SV");
 
         FacultiesView facuView = new FacultiesView();
         FacuDAO dao = new FacuDAO();
@@ -64,7 +65,10 @@ public class MainFrame extends JFrame {
         new RewardController(rewardView, this, rewardDAO);
         contentPanel.add(rewardView, "KT");
 
-        contentPanel.add(new RewardView(), "KL");
+        DisciplineView disciplineView = new DisciplineView();
+        DisciplineDAO disciplineDAO = new DisciplineDAO();
+        new DisciplineController(disciplineView, this, disciplineDAO);
+        contentPanel.add(disciplineView, "KL");
 
         add(contentPanel);
 

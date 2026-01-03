@@ -1,11 +1,16 @@
 package org.example.Controller;
 
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.example.DAO.TeacherDAO;
 import org.example.Model.Teacher;
 import org.example.View.MainFrame;
 import org.example.View.TeacherView;
 
 import javax.swing.*;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -94,9 +99,17 @@ public class TeacherController {
                 (JTextField) view.cboFacuId.getEditor().getEditorComponent();
 
         editor.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-            public void insertUpdate(javax.swing.event.DocumentEvent e) { fillFacultyName(); }
-            public void removeUpdate(javax.swing.event.DocumentEvent e) { fillFacultyName(); }
-            public void changedUpdate(javax.swing.event.DocumentEvent e) { fillFacultyName(); }
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                fillFacultyName();
+            }
+
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                fillFacultyName();
+            }
+
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                fillFacultyName();
+            }
         });
     }
 
@@ -195,9 +208,10 @@ public class TeacherController {
                 JOptionPane.showMessageDialog(view, "Sửa thất bại");
             }
         });
-
         // timkiem
         view.btnSearch.addActionListener(e -> loadTableSearch());
+
+        view.btnExport.addActionListener(e -> onExport());
 
         // reset
         view.btnMoi.addActionListener(e -> {
@@ -205,6 +219,8 @@ public class TeacherController {
             clearSearch();
             loadTable();
         });
+
+        view.btnBack.addActionListener(e -> mainFrame.showView("HOME"));
     }
 
     // cell click
@@ -251,5 +267,114 @@ public class TeacherController {
 
     private String emptyToNull(String s) {
         return (s == null || s.trim().isEmpty()) ? null : s.trim();
+    }
+
+    private void onExport() {
+        List<Teacher> teacherList = dao.findAll();
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
+        fileChooser.setSelectedFile(new File("Danh_sach_GV.xlsx")); //
+        if (fileChooser.showSaveDialog(view) == JFileChooser.APPROVE_OPTION) {
+            java.io.File filePath = fileChooser.getSelectedFile();
+            try (Workbook workbook = new XSSFWorkbook()) {
+                Sheet sheet = workbook.createSheet("Danh sách GV");
+
+                // === TITLE ===
+                Row titleRow = sheet.createRow(0);
+                Cell titleCell = titleRow.createCell(0);
+                titleCell.setCellValue("DANH SÁCH GIẢNG VIÊN");
+
+                // Style title
+                CellStyle titleStyle = workbook.createCellStyle();
+                Font titleFont = workbook.createFont();
+                titleFont.setBold(true);
+                titleFont.setFontHeightInPoints((short) 16);
+                titleStyle.setFont(titleFont);
+                titleStyle.setAlignment(HorizontalAlignment.CENTER);
+                titleCell.setCellStyle(titleStyle);
+
+                // Merge title across all columns
+                sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 4));
+
+                // === HEADER ===
+                Row headerRow = sheet.createRow(1);
+                String[] headers = {"STT", "Mã giảng viên", "Tên giảng viên", "Mã khoa", "Tên khoa"};
+                CellStyle headerStyle = workbook.createCellStyle();
+                Font headerFont = workbook.createFont();
+                headerFont.setBold(true);
+                headerStyle.setFont(headerFont);
+                headerStyle.setAlignment(HorizontalAlignment.CENTER);
+                headerStyle.setBorderBottom(BorderStyle.THIN);
+                headerStyle.setBorderTop(BorderStyle.THIN);
+                headerStyle.setBorderLeft(BorderStyle.THIN);
+                headerStyle.setBorderRight(BorderStyle.THIN);
+
+                for (int i = 0; i < headers.length; i++) {
+                    Cell cell = headerRow.createCell(i);
+                    cell.setCellValue(headers[i]);
+                    cell.setCellStyle(headerStyle);
+                }
+
+                // === DATA ===
+                CellStyle dataStyle = workbook.createCellStyle();
+                dataStyle.setBorderBottom(BorderStyle.THIN);
+                dataStyle.setBorderTop(BorderStyle.THIN);
+                dataStyle.setBorderLeft(BorderStyle.THIN);
+                dataStyle.setBorderRight(BorderStyle.THIN);
+
+                int no = 1; //STT
+                int rowIndex = 2;
+                for (Teacher teacher : teacherList) {
+                    Row row = sheet.createRow(rowIndex++);
+                    Cell cell0 = row.createCell(0);
+                    cell0.setCellValue(no++);
+                    cell0.setCellStyle(dataStyle);
+
+                    Cell cell1 = row.createCell(1);
+                    cell1.setCellValue(teacher.getTeacherId());
+                    cell1.setCellStyle(dataStyle);
+
+                    Cell cell2 = row.createCell(2);
+                    cell2.setCellValue(teacher.getTeacherName());
+                    cell2.setCellStyle(dataStyle);
+
+                    Cell cell3 = row.createCell(3);
+                    cell3.setCellValue(teacher.getFacuId());
+                    cell3.setCellStyle(dataStyle);
+
+                    Cell cell4 = row.createCell(4);
+                    cell4.setCellValue(teacher.getFacuName());
+                    cell4.setCellStyle(dataStyle);
+                }
+
+                // === AUTO FILTER ===
+                sheet.setAutoFilter(new CellRangeAddress(
+                        1,
+                        sheet.getLastRowNum(),
+                        0,
+                        headers.length - 1
+                ));
+
+                // === FREEZE HEADER (title + header) ===
+                sheet.createFreezePane(0, 2);
+
+                // === AUTO SIZE COLUMNS ===
+                for (int i = 0; i < headers.length; i++) {
+                    sheet.autoSizeColumn(i);
+                }
+
+                // Auto-size columns
+                // Ghi file
+                try (FileOutputStream fos = new FileOutputStream(filePath)) {
+                    workbook.write(fos);
+                }
+
+                JOptionPane.showMessageDialog(view, "Xuất Excel thành công!");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(view, "Xuất Excel thất bại: " + ex.getMessage());
+            }
+        }
     }
 }

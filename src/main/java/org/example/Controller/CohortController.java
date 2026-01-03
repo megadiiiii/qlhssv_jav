@@ -248,7 +248,7 @@ public class CohortController {
 
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
-        fileChooser.setSelectedFile(new File("DanhSachCohort.xlsx")); // tên mặc định
+        fileChooser.setSelectedFile(new File("Danh_sach_khoa_dao_tao.xlsx")); //
         if (fileChooser.showSaveDialog(view) == JFileChooser.APPROVE_OPTION) {
             java.io.File filePath = fileChooser.getSelectedFile();
             try (Workbook workbook = new XSSFWorkbook()) {
@@ -317,6 +317,23 @@ public class CohortController {
                     cell3.setCellValue(c.getCohortEndYear());
                     cell3.setCellStyle(dataStyle);
                 }
+
+                // === AUTO FILTER ===
+                sheet.setAutoFilter(new CellRangeAddress(
+                        1,
+                        sheet.getLastRowNum(),
+                        0,
+                        headers.length - 1
+                ));
+
+                // === FREEZE HEADER (title + header) ===
+                sheet.createFreezePane(0, 2);
+
+                // === AUTO SIZE COLUMNS ===
+                for (int i = 0; i < headers.length; i++) {
+                    sheet.autoSizeColumn(i);
+                }
+
 
                 // Auto-size columns
                 // Ghi file

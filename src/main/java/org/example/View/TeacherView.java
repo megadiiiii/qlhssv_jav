@@ -15,7 +15,7 @@ public class TeacherView extends JPanel {
     public JComboBox<String> cboFacuIdSearch;
 
     // ===== BUTTONS (5 nút 1 khu) =====
-    public JButton btnThem, btnSua, btnXoa, btnSearch, btnMoi;
+    public JButton btnThem, btnSua, btnXoa, btnSearch, btnMoi, btnExport, btnBack;
 
     // ===== TABLE =====
     public DefaultTableModel model;
@@ -123,13 +123,17 @@ public class TeacherView extends JPanel {
         btnSua = new JButton("Sửa");
         btnXoa = new JButton("Xóa");
         btnSearch = new JButton("Tìm");
+        btnExport = new JButton("Xuất Excel");
         btnMoi = new JButton("Mới");
+        btnBack = new JButton("Quay lại");
 
         btnBar.add(btnThem);
         btnBar.add(btnSua);
         btnBar.add(btnXoa);
         btnBar.add(btnSearch);
         btnBar.add(btnMoi);
+        btnBar.add(btnExport);
+        btnBar.add(btnBack);
 
         wrapper.add(formCrud, BorderLayout.NORTH);
         wrapper.add(formSearch, BorderLayout.CENTER);
