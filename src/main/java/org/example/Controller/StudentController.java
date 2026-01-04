@@ -397,11 +397,11 @@ public class StudentController {
                 try {
                     int result = dao.update(st);
                     if (result > 0) {
-                        JOptionPane.showMessageDialog(view, "cập nhật thông tin SV thành công");
+                        JOptionPane.showMessageDialog(view, "Cập nhật thành công");
                         loadTable();
                         clearInput();
                     } else {
-                        JOptionPane.showMessageDialog(view, "cập nhật thông tin SV thất bại");
+                        JOptionPane.showMessageDialog(view, "Cập nhật thất bại");
                     }
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(view, e.getMessage());
@@ -551,11 +551,11 @@ public class StudentController {
                     cell1.setCellStyle(dataStyle);
 
                     Cell cell2 = row.createCell(2);
-                    cell2.setCellValue(st.getFirstName());
+                    cell2.setCellValue(st.getLastName());
                     cell2.setCellStyle(dataStyle);
 
                     Cell cell3 = row.createCell(3);
-                    cell3.setCellValue(st.getLastName());
+                    cell3.setCellValue(st.getFirstName());
                     cell3.setCellStyle(dataStyle);
 
                     Cell cell4 = row.createCell(4);
@@ -653,8 +653,8 @@ public class StudentController {
     private void clearSearchInput() {
         view.txtIdSearch.setText("");
         view.txtFullNameSearch.setText("");
-        view.cboFacu.setSelectedIndex(-1);
-        view.cboMajor.removeAllItems();
-        view.cboClass.removeAllItems();
+        view.cboFacuSearch.setSelectedIndex(-1);
+        view.cboMajorSearch.removeAllItems();
+        view.cboClassSearch.removeAllItems();
     }
 }

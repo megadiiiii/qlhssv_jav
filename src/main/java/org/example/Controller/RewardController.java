@@ -60,7 +60,6 @@ public class RewardController {
         view.btnAddReward.addActionListener(e -> addReward());
         view.btnEditReward.addActionListener(e -> editReward());
         view.btnDeleteReward.addActionListener(e -> deleteReward());
-        view.btnSearchReward.addActionListener(e -> onSearch());
         view.btnExportReward.addActionListener(e -> onExport());
 
         view.table.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
@@ -225,9 +224,6 @@ public class RewardController {
         view.txtRewardNote.setText("");
         view.txtRewardQuyetDinh.setText("");
         view.table.clearSelection();
-    }
-
-    private void onSearch() {
     }
 
     private void onExport() {

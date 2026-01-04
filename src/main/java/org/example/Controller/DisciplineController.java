@@ -13,11 +13,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class DisciplineController {
-
     private DisciplineView view;
     private DisciplineDAO dao;
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -131,37 +131,54 @@ public class DisciplineController {
             if (row == -1) return;
 
             int id = Integer.parseInt(view.model.getValueAt(row, 0).toString());
-            try {
-                dao.delete(new Discipline(id, null, null, null, null, null, null));
-                loadTable();
-                clearForm();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
+
+            if (JOptionPane.showConfirmDialog(view, "Xác nhận xóa kỉ luật?") == JOptionPane.YES_OPTION) {
+                try {
+                    int result = dao.delete(new Discipline(id, null, null, null, null, null, null));
+                    if (result > 0) {
+                        JOptionPane.showMessageDialog(view, "Xóa thành công");
+                        loadTable();
+                        clearForm();
+                    } else {
+                        JOptionPane.showMessageDialog(view, "Xóa thất bại");
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 
         view.btnSua.addActionListener(e -> {
-            int id = Integer.parseInt(view.txtIdKyLuat.getText());
+            int row = view.table.getSelectedRow();
+            if (row == -1) return;
+            int id = Integer.parseInt(view.model.getValueAt(row, 0).toString());
 
-            try {
-                dao.update(new Discipline(
-                        id,
-                        getStudentIdFromCombo(),
-                        getHinhThucFromCombo(),
-                        emptyToNull(view.txtSoQuyetDinh.getText()),
-                        getSqlDate(view.dateNgayKyLuat),
-                        getSqlDate(view.dateNgayKetThuc),
-                        view.txtLyDo.getText()
-                ));
-                loadTable();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
+            if (JOptionPane.showConfirmDialog(view, "Xác nhận cập nhật thông tin kỉ luật?") == JOptionPane.YES_OPTION) {
+                try {
+                    int result = dao.update(new Discipline(
+                            id,
+                            getStudentIdFromCombo(),
+                            getHinhThucFromCombo(),
+                            emptyToNull(view.txtSoQuyetDinh.getText()),
+                            getSqlDate(view.dateNgayKyLuat),
+                            getSqlDate(view.dateNgayKetThuc),
+                            view.txtLyDo.getText()
+                    ));
+                    if (result > 0) {
+                        JOptionPane.showMessageDialog(view, "Cập nhật thành công");
+                        loadTable();
+                        clearForm();
+                    } else {
+                        JOptionPane.showMessageDialog(view, "Cập nhật thất bại");
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 
         view.btnQuayLai.addActionListener(e -> mainFrame.showView("HOME"));
 
-        view.btnTimKiem.addActionListener(e -> onSearch());
         view.btnExport.addActionListener(e -> onExport());
     }
 
@@ -170,24 +187,48 @@ public class DisciplineController {
         int row = view.table.getSelectedRow();
         if (row < 0) return;
 
-        view.txtIdKyLuat.setText(view.model.getValueAt(row, 0).toString());
         view.cboMaSinhVien.setSelectedItem(view.model.getValueAt(row, 1));
         view.txtTenSinhVien.setText(view.model.getValueAt(row, 2).toString());
         view.cboHinhThuc.setSelectedItem(view.model.getValueAt(row, 3));
-        view.dateNgayKyLuat.setDate((java.util.Date) view.model.getValueAt(row, 4));
-        view.dateNgayKetThuc.setDate((java.util.Date) view.model.getValueAt(row, 5));
+
+        Object dobObj = view.model.getValueAt(row, 4);
+        if (dobObj != null && !dobObj.toString().isEmpty()) {
+            try {
+                java.util.Date dob = new SimpleDateFormat("dd/MM/yyyy").parse(dobObj.toString());
+                view.dateNgayKyLuat.setDate(dob);
+            } catch (ParseException ex) {
+                view.dateNgayKyLuat.setDate(null);
+                ex.printStackTrace();
+            }
+        } else {
+            view.dateNgayKyLuat.setDate(null);
+        }
+        view.dateNgayKyLuat.setDateFormatString("dd/MM/yyyy");
+
+        Object kt = view.model.getValueAt(row, 5);
+        if (kt != null && !kt.toString().isEmpty()) {
+            try {
+                java.util.Date dob = new SimpleDateFormat("dd/MM/yyyy").parse(kt.toString());
+                view.dateNgayKetThuc.setDate(dob);
+            } catch (ParseException ex) {
+                view.dateNgayKetThuc.setDate(null);
+                ex.printStackTrace();
+            }
+        } else {
+            view.dateNgayKetThuc.setDate(null);
+        }
+        view.dateNgayKetThuc.setDateFormatString("dd/MM/yyyy");
+
         view.txtSoQuyetDinh.setText(view.model.getValueAt(row, 6).toString());
         view.txtLyDo.setText(view.model.getValueAt(row, 7).toString());
 
         // khoa 3 truong dl
-        view.txtIdKyLuat.setEditable(false);
         view.cboMaSinhVien.setEnabled(false);
         view.txtTenSinhVien.setEditable(false);
     }
 
     private void clearForm() {
         view.cboMaSinhVien.setEnabled(true);
-        view.txtIdKyLuat.setText("");
         view.cboMaSinhVien.setSelectedItem("");
         view.txtTenSinhVien.setText("");
         view.cboHinhThuc.setSelectedIndex(0);
@@ -214,9 +255,6 @@ public class DisciplineController {
 
     private String emptyToNull(String s) {
         return (s == null || s.trim().isEmpty()) ? null : s.trim();
-    }
-
-    private void onSearch() {
     }
 
     private void onExport() {

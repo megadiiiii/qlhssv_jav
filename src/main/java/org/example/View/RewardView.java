@@ -5,7 +5,6 @@ import com.toedter.calendar.JDateChooser;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.Date;
 
 public class RewardView extends JPanel {
 
@@ -14,20 +13,18 @@ public class RewardView extends JPanel {
     }
 
     ///  form
-    public JTextField txtRewardId, txtRewardQuyetDinh;
+    public JTextField txtRewardId, txtRewardQuyetDinh, txtRewardNote;
     public JComboBox<String> cboStudentId;
     public JTextField txtStudentName;
-    public JTextArea txtRewardNote;
+    public JTextField txtStudentIdSearch;
 
     public JDateChooser dcRewardDate;
+    public JDateChooser dcRewardDateSearch;
 
-    public JLabel lblRewardId, lblStudentId, lblStudentName, lblRewardDate, lblRewardNote, lblRewardQuyetDinh;
-
-    public JButton btnAddReward, btnDeleteReward, btnEditReward, btnExportReward, btnSearchReward, btnBack;
+    public JButton btnAddReward, btnDeleteReward, btnEditReward, btnExportReward, btnBack;
 
     // bảng
     public DefaultTableModel model;
-    public JScrollPane scrollPane;
     public JTable table;
 
     private JPanel tablePanel;
@@ -40,154 +37,127 @@ public class RewardView extends JPanel {
         lblTitle.setFont(new Font("Segoe UI", Font.PLAIN, 20));
         add(lblTitle, BorderLayout.NORTH);
 
-        JPanel center = new JPanel(new BorderLayout());
-        center.add(formInfoInit(), BorderLayout.NORTH);
-
-        tableInit();
-        center.add(tablePanel, BorderLayout.CENTER);
+        JPanel center = new JPanel(new BorderLayout(10, 10));
+        center.add(buildFormArea(), BorderLayout.NORTH);
+        center.add(tableInit(), BorderLayout.CENTER);
 
         add(center, BorderLayout.CENTER);
     }
 
-    private JPanel formInfoInit() {
-        JPanel container = new JPanel(new BorderLayout());
+    private JPanel buildFormArea() {
+        JPanel wrapper = new JPanel(new BorderLayout(8, 8));
 
-        JLabel lblInfoTitle = new JLabel("Thông tin");
-        lblInfoTitle.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        lblInfoTitle.setBorder(BorderFactory.createEmptyBorder(10, 30, 0, 30));
-        container.add(lblInfoTitle, BorderLayout.NORTH);
+        //
+        //Form CRUD
+        JPanel formCrud = new JPanel(new GridBagLayout());
+        formCrud.setBorder(BorderFactory.createTitledBorder("Thông tin"));
 
-        JPanel form = new JPanel();
-        GroupLayout layout = new GroupLayout(form);
-        form.setLayout(layout);
-        layout.setAutoCreateGaps(true);
-        layout.setAutoCreateContainerGaps(true);
+        GridBagConstraints g = new GridBagConstraints();
+        g.insets = new Insets(6, 20, 6, 20);
+        g.fill = GridBagConstraints.HORIZONTAL;
+        g.weightx = 0;
 
-        lblRewardId = new JLabel("Reward ID");
+        // Row 0: Name | Start | End
+        int row = 0;
+
+        g.gridy = row;
+
+        g.gridx = 0;
+        formCrud.add(new JLabel("Mã SV"), g);
+        g.gridx = 1;
+        g.weightx = 0.5;
+        cboStudentId = new JComboBox<>();
+        formCrud.add(cboStudentId, g);
+
+        g.gridx = 2;
+        g.weightx = 0;
+        formCrud.add(new JLabel("Tên SV"), g);
+        g.gridx = 3;
+        g.weightx = 0.1;
+        txtStudentName = new JTextField(8);
+        formCrud.add(txtStudentName, g);
+        row++;
+
+        // Row 1
+        g.gridy = row;
+        g.gridx = 0;
+        g.weightx = 0;
+        formCrud.add(new JLabel("Ngày khen thưởng"), g);
+        g.gridx = 1;
+        g.weightx = 0.5;
+        formCrud.add(dcRewardDate = new JDateChooser(), g);
+
+        g.gridx = 2;
+        g.weightx = 0;
+        formCrud.add(new JLabel("Quyết định"), g);
+        g.gridx = 3;
+        g.weightx = 0.5;
+        formCrud.add(txtRewardQuyetDinh = new JTextField(10), g);
+        row++;
+
+        // Row 1
+        g.gridy = row;
+        g.gridx = 0;
+        g.weightx = 0;
+        formCrud.add(new JLabel("ID Khen thưởng"), g);
+        g.gridx = 1;
+        g.weightx = 0.5;
         txtRewardId = new JTextField();
         txtRewardId.setEnabled(false);
+        formCrud.add(txtRewardId, g);
 
-        lblStudentId = new JLabel("Mã sinh viên");
-        cboStudentId = new JComboBox<>();
-        cboStudentId.setEditable(true); // nhap chon deu dc
+        g.gridx = 2;
+        g.weightx = 0;
+        formCrud.add(new JLabel("Lý do"), g);
+        g.gridx = 3;
+        g.weightx = 0.5;
+        txtRewardNote = new JTextField();
+        formCrud.add(txtRewardNote, g);
 
-        lblStudentName = new JLabel("Tên sinh viên");
-        txtStudentName = new JTextField();
-        txtStudentName.setEnabled(false);
-
-        lblRewardDate = new JLabel("Ngày");
-        dcRewardDate = new JDateChooser();
-        dcRewardDate.setDateFormatString("dd/MM/yyyy");
-        dcRewardDate.setDate(new Date());
-
-        lblRewardQuyetDinh = new JLabel("Quyết định");
-        txtRewardQuyetDinh = new JTextField();
-
-        lblRewardNote = new JLabel("Lý do");
-        txtRewardNote = new JTextArea(3, 20);
-        txtRewardNote.setLineWrap(true);
-        txtRewardNote.setWrapStyleWord(true);
-        JScrollPane noteScroll = new JScrollPane(txtRewardNote);
-
+        //5 buttons in one bar
+        JPanel btnBar = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 6));
         btnAddReward = new JButton("Thêm");
-        btnDeleteReward = new JButton("Xóa");
         btnEditReward = new JButton("Sửa");
+        btnDeleteReward = new JButton("Xóa");
         btnExportReward = new JButton("Xuất Excel");
-        btnSearchReward = new JButton("Tìm kiếm");
         btnBack = new JButton("Quay lại");
 
-        layout.setHorizontalGroup(
-                layout.createSequentialGroup()
-                        .addGap(30)
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addComponent(lblRewardId)
-                                .addComponent(lblStudentId)
-                                .addComponent(lblStudentName)
-                                .addComponent(lblRewardDate)
-                                .addComponent(lblRewardQuyetDinh)
-                                .addComponent(lblRewardNote)
-                        )
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addComponent(txtRewardId)
-                                .addComponent(cboStudentId)
-                                .addComponent(txtStudentName)
-                                .addComponent(dcRewardDate)
-                                .addComponent(txtRewardQuyetDinh)
-                                .addComponent(noteScroll)
-                                .addGroup(GroupLayout.Alignment.CENTER, layout.createSequentialGroup()
-                                        .addComponent(btnAddReward)
-                                        .addComponent(btnDeleteReward)
-                                        .addComponent(btnEditReward)
-                                        .addComponent(btnExportReward)
-                                        .addComponent(btnSearchReward)
-                                        .addComponent(btnBack)
-                                )
-                        )
-                        .addGap(30)
-        );
-        layout.setVerticalGroup(
-                layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblRewardId)
-                                .addComponent(txtRewardId)
-                        )
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblStudentId)
-                                .addComponent(cboStudentId)
-                        )
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblStudentName)
-                                .addComponent(txtStudentName)
-                        )
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblRewardDate)
-                                .addComponent(dcRewardDate)
-                        )
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblRewardQuyetDinh)
-                                .addComponent(txtRewardQuyetDinh)
-                        )
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addComponent(lblRewardNote)
-                                .addComponent(noteScroll)
-                        )
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(btnAddReward)
-                                .addComponent(btnDeleteReward)
-                                .addComponent(btnEditReward)
-                                .addComponent(btnExportReward)
-                                .addComponent(btnSearchReward)
-                                .addComponent(btnBack)
-                        )
-        );
+        btnBar.add(btnAddReward);
+        btnBar.add(btnEditReward);
+        btnBar.add(btnDeleteReward);
+        btnBar.add(btnExportReward);
+        btnBar.add(btnBack);
 
-        container.add(form, BorderLayout.CENTER);
-        return container;
+        wrapper.add(formCrud, BorderLayout.NORTH);
+        wrapper.add(btnBar, BorderLayout.SOUTH);
+
+        return wrapper;
     }
 
-    private void tableInit() {
+    private JScrollPane tableInit() {
         model = new DefaultTableModel(
-                new String[]{"Reward ID", "Mã SV", "Tên SV", "Ngày", "Lý do", "Quyết định"}, 0
-        );
+                new String[]{
+                        "Reward ID", "Mã SV", "Tên SV", "Ngày", "Lý do", "Quyết định"
+                }, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
 
         table = new JTable(model);
         table.setFillsViewportHeight(true);
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        table.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        table.setRowHeight(30);
-        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 16));
-        table.getTableHeader().setBackground(Color.LIGHT_GRAY);
-        table.getTableHeader().setForeground(Color.BLACK);
+        table.setRowHeight(28);
+        table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
 
         // Ẩn cột ID
         table.getColumnModel().getColumn(0).setMinWidth(0);
         table.getColumnModel().getColumn(0).setMaxWidth(0);
         table.getColumnModel().getColumn(0).setWidth(0);
 
-        scrollPane = new JScrollPane(table);
-
-        tablePanel = new JPanel(new BorderLayout());
-        tablePanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
-        tablePanel.add(scrollPane, BorderLayout.CENTER);
+        JScrollPane sp = new JScrollPane(table);
+        sp.setBorder(BorderFactory.createTitledBorder("Danh sách"));
+        return sp;
     }
 }
