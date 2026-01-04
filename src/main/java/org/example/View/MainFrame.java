@@ -40,8 +40,7 @@ public class MainFrame extends JFrame {
 
         MajorView majorView = new MajorView();
         MajorDAO majorDAO = new MajorDAO();
-        FacuDAO facuDAO = new FacuDAO();
-        new MajorController(majorView, this, majorDAO, facuDAO);
+        new MajorController(majorView, this, majorDAO);
         contentPanel.add(majorView, "MAJOR");
 
 
@@ -69,6 +68,11 @@ public class MainFrame extends JFrame {
         DisciplineDAO disciplineDAO = new DisciplineDAO();
         new DisciplineController(disciplineView, this, disciplineDAO);
         contentPanel.add(disciplineView, "KL");
+
+        ScholarshipView scholarshipView = new ScholarshipView();
+        ScholarshipDAO scholarshipDAO = new ScholarshipDAO();
+        new ScholarshipController(scholarshipView, this, scholarshipDAO);
+        contentPanel.add(scholarshipView, "HB");
 
         add(contentPanel);
 

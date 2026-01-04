@@ -17,6 +17,7 @@ public class MajorDAO {
                 select m.*, f.*
                 from major m
                 join faculties f on m.facu_id = f.facu_id
+                order by f.facu_name, m.major_id asc
                 """;
 
         try {

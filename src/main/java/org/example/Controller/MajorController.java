@@ -1,5 +1,8 @@
 package org.example.Controller;
 
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.example.DAO.FacuDAO;
 import org.example.DAO.MajorDAO;
 import org.example.Model.Faculties;
@@ -8,17 +11,17 @@ import org.example.View.MainFrame;
 import org.example.View.MajorView;
 
 import javax.swing.*;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 
 public class MajorController {
     private MajorView view;
     private MajorDAO majorDAO;
-    private FacuDAO facuDAO;
 
-    public MajorController(MajorView view, MainFrame mainFrame, MajorDAO majorDAO, FacuDAO facuDAO) {
+    public MajorController(MajorView view, MainFrame mainFrame, MajorDAO majorDAO) {
         this.view = view;
         this.majorDAO = majorDAO;
-        this.facuDAO = facuDAO;
 
         loadFacu();
         loadTable();
@@ -40,8 +43,12 @@ public class MajorController {
         view.btnMajorDelete.addActionListener(e -> deleteMajor());
         view.btnMajorUpdate.addActionListener(e -> updateMajor());
         view.btnSearch.addActionListener(e -> searchMajor());
+        view.btnExport.addActionListener(e -> onExport());
         view.btnBack.addActionListener(e -> {
             mainFrame.showView("HOME");
+            clearSearchInput();
+            clearInput();
+            loadTable();
         });
     }
 
@@ -202,7 +209,7 @@ public class MajorController {
         view.cboFacu.addItem(placeholder);
         view.cboFacuSearch.addItem(placeholder);
 
-        List<Faculties> facuList = facuDAO.findAll();
+        List<Faculties> facuList = new FacuDAO().findAll();
 
         for (Faculties f : facuList) {
             view.cboFacu.addItem(f);
@@ -223,5 +230,110 @@ public class MajorController {
         view.txtMajorIdSearch.setText("");
         view.txtMajorNameSearch.setText("");
         view.cboFacuSearch.setSelectedIndex(0);
+    }
+
+    private void onExport() {
+        List<Major> list = majorDAO.findAllMajors();
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
+        fileChooser.setSelectedFile(new File("Danh_sach_chuyen_nganh.xlsx")); //
+        if (fileChooser.showSaveDialog(view) == JFileChooser.APPROVE_OPTION) {
+            java.io.File filePath = fileChooser.getSelectedFile();
+            try (Workbook workbook = new XSSFWorkbook()) {
+                Sheet sheet = workbook.createSheet("Danh sách chuyên ngành");
+
+                // === TITLE ===
+                Row titleRow = sheet.createRow(0);
+                Cell titleCell = titleRow.createCell(0);
+                titleCell.setCellValue("DANH SÁCH CHUYÊN NGÀNH");
+
+                // Style title
+                CellStyle titleStyle = workbook.createCellStyle();
+                Font titleFont = workbook.createFont();
+                titleFont.setBold(true);
+                titleFont.setFontHeightInPoints((short) 16);
+                titleStyle.setFont(titleFont);
+                titleStyle.setAlignment(HorizontalAlignment.CENTER);
+                titleCell.setCellStyle(titleStyle);
+
+                // Merge title across all columns
+                sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 3));
+
+                // === HEADER ===
+                Row headerRow = sheet.createRow(1);
+                String[] headers = {"STT", "Khoa", "Mã chuyên ngành", "Tên chuyên ngành"};
+                CellStyle headerStyle = workbook.createCellStyle();
+                Font headerFont = workbook.createFont();
+                headerFont.setBold(true);
+                headerStyle.setFont(headerFont);
+                headerStyle.setAlignment(HorizontalAlignment.CENTER);
+                headerStyle.setBorderBottom(BorderStyle.THIN);
+                headerStyle.setBorderTop(BorderStyle.THIN);
+                headerStyle.setBorderLeft(BorderStyle.THIN);
+                headerStyle.setBorderRight(BorderStyle.THIN);
+
+                for (int i = 0; i < headers.length; i++) {
+                    Cell cell = headerRow.createCell(i);
+                    cell.setCellValue(headers[i]);
+                    cell.setCellStyle(headerStyle);
+                }
+
+                // === DATA ===
+                CellStyle dataStyle = workbook.createCellStyle();
+                dataStyle.setBorderBottom(BorderStyle.THIN);
+                dataStyle.setBorderTop(BorderStyle.THIN);
+                dataStyle.setBorderLeft(BorderStyle.THIN);
+                dataStyle.setBorderRight(BorderStyle.THIN);
+
+                int no = 1; //STT
+                int rowIndex = 2;
+                for (Major m : list) {
+                    Row row = sheet.createRow(rowIndex++);
+                    Cell cell0 = row.createCell(0);
+                    cell0.setCellValue(no++);
+                    cell0.setCellStyle(dataStyle);
+
+                    Cell cell1 = row.createCell(1);
+                    cell1.setCellValue(m.getFaculty().getFacuName());
+                    cell1.setCellStyle(dataStyle);
+
+                    Cell cell2 = row.createCell(2);
+                    cell2.setCellValue(m.getMajorId());
+                    cell2.setCellStyle(dataStyle);
+
+                    Cell cell3 = row.createCell(3);
+                    cell3.setCellValue(m.getMajorName());
+                    cell3.setCellStyle(dataStyle);
+                }
+
+                // === AUTO FILTER ===
+                sheet.setAutoFilter(new CellRangeAddress(
+                        1,
+                        sheet.getLastRowNum(),
+                        0,
+                        headers.length - 1
+                ));
+
+                // === FREEZE HEADER (title + header) ===
+                sheet.createFreezePane(0, 2);
+
+                // === AUTO SIZE COLUMNS ===
+                for (int i = 0; i < headers.length; i++) {
+                    sheet.autoSizeColumn(i);
+                }
+
+                // Auto-size columns
+                // Ghi file
+                try (FileOutputStream fos = new FileOutputStream(filePath)) {
+                    workbook.write(fos);
+                }
+
+                JOptionPane.showMessageDialog(view, "Xuất Excel thành công!");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(view, "Xuất Excel thất bại: " + ex.getMessage());
+            }
+        }
     }
 }

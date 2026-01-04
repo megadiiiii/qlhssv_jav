@@ -20,7 +20,7 @@ public class MajorView extends JPanel {
 
     //
     //BUTTONS (5 nút 1 khu)
-    public JButton btnMajorAdd, btnMajorUpdate, btnMajorDelete, btnSearch, btnBack;
+    public JButton btnMajorAdd, btnMajorUpdate, btnMajorDelete, btnSearch, btnBack, btnExport;
 
     //
     //TABLE
@@ -132,12 +132,14 @@ public class MajorView extends JPanel {
         btnMajorAdd = new JButton("Thêm");
         btnMajorUpdate = new JButton("Sửa");
         btnMajorDelete = new JButton("Xóa");
+        btnExport = new JButton("Xuất Excel");
         btnSearch = new JButton("Tìm");
         btnBack = new JButton("Quay lại");
 
         btnBar.add(btnMajorAdd);
         btnBar.add(btnMajorUpdate);
         btnBar.add(btnMajorDelete);
+        btnBar.add(btnExport);
         btnBar.add(btnSearch);
         btnBar.add(btnBack);
 
