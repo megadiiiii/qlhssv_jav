@@ -1,10 +1,10 @@
 package org.example.View;
 
-import org.example.Controller.DisciplineController;
-import org.example.Controller.FacuController;
-import org.example.Controller.MenuNavController;
-import org.example.DAO.DisciplineDAO;
+import org.example.Controller.*;
+import org.example.DAO.CohortDAO;
 import org.example.DAO.FacuDAO;
+import org.example.DAO.MajorDAO;
+import org.example.DAO.TeacherDAO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,21 +30,36 @@ public class MainFrame extends JFrame {
         contentPanel.add(homepage, "HOME");
 
 
-        contentPanel.add(new StudentView(), "SV");
+//        contentPanel.add(new StudentView(), "SV");
 
         FacultiesView facuView = new FacultiesView();
         FacuDAO dao = new FacuDAO();
         new FacuController(facuView, this, dao);
         contentPanel.add(facuView, "FACU");
 
-        contentPanel.add(new MajorView(), "MAJOR");
+
+        MajorView majorView = new MajorView();
+        MajorDAO majorDAO = new MajorDAO();
+        FacuDAO facuDAO = new FacuDAO();
+        new MajorController(majorView, this, majorDAO, facuDAO);
+        contentPanel.add(majorView, "MAJOR");
+
+
         contentPanel.add(new ClassView(), "CLASS");
+
+        CohortView cohortView = new CohortView();
+        CohortDAO cohortDAO = new CohortDAO();
+        new CohortController(cohortView, this, cohortDAO);
+        contentPanel.add(cohortView, "COHORT");
+
+        TeacherView teacherView = new TeacherView();
+        TeacherDAO teacherDAO = new TeacherDAO();
+        new TeacherController(teacherView, this, teacherDAO);
+        contentPanel.add(teacherView, "TEACHER");
+
         contentPanel.add(new RewardView(), "KT");
 
-        DisciplineView disciplineView = new DisciplineView();
-        DisciplineDAO disciplineDAO = new DisciplineDAO();
-        new DisciplineController(disciplineView, this, disciplineDAO);
-        contentPanel.add(disciplineView, "KL");
+        contentPanel.add(new RewardView(), "KL");
 
         add(contentPanel);
 

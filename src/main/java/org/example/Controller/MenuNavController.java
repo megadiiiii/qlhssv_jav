@@ -34,6 +34,14 @@ public class MenuNavController {
                 currentFrame.showView("KL")
         );
 
+        menu.cohort.addActionListener(e ->
+                currentFrame.showView("COHORT")
+        );
+
+        menu.teacher.addActionListener(e ->
+                currentFrame.showView("TEACHER")
+        );
+
         menu.logoutItem.addActionListener(e -> {
             new LoginView().setVisible(true);
             currentFrame.dispose();

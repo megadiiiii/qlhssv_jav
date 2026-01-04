@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class TeacherController {
-
     private TeacherView view;
     private TeacherDAO dao;
 
