@@ -3,7 +3,9 @@ package org.example.View;
 import org.example.Controller.FacuController;
 import org.example.Controller.MenuNavController;
 import org.example.Controller.RewardController;
+import org.example.Controller.ScholarshipController;
 import org.example.DAO.FacuDAO;
+import org.example.DAO.ScholarshipDAO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,6 +44,11 @@ public class MainFrame extends JFrame {
         RewardView rewardView = new RewardView();
         new RewardController(rewardView);
         contentPanel.add(rewardView, "KT");
+
+        ScholarshipView scholarshipView = new ScholarshipView();
+        ScholarshipDAO scholarshipDAO = new ScholarshipDAO();
+        new ScholarshipController(scholarshipView,this, scholarshipDAO);
+        contentPanel.add(scholarshipView, "HB");
 
         add(contentPanel);
 

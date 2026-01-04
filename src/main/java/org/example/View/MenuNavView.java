@@ -3,7 +3,7 @@ package org.example.View;
 import javax.swing.*;
 
 public class MenuNavView extends JMenuBar {
-    public JMenuItem ttsv, facu, major, className, kt, kl, logoutItem, homepage;
+    public JMenuItem ttsv, facu, major, className, kt, kl, logoutItem, homepage, hb;
 
     public MenuNavView() {
         JMenu hp = new JMenu("Trang chủ");
@@ -28,8 +28,10 @@ public class MenuNavView extends JMenuBar {
         JMenu hc = new JMenu("Khen thưởng - Kỷ luật");
         kt = new JMenuItem("Khen thưởng");
         kl = new JMenuItem("Kỷ luật");
+        hb = new JMenuItem("Học bổng");
         hc.add(kt);
         hc.add(kl);
+        hc.add(hb);
         add(hc);
 
         add(Box.createHorizontalGlue());

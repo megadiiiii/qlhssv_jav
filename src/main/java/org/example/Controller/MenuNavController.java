@@ -30,6 +30,10 @@ public class MenuNavController {
                 currentFrame.showView("KT")
         );
 
+        menu.hb.addActionListener(e ->
+                currentFrame.showView("HB")
+        );
+
         menu.logoutItem.addActionListener(e -> {
             new LoginView().setVisible(true);
             currentFrame.dispose();

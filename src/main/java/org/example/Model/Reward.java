@@ -10,7 +10,8 @@ public class Reward {
     private String rewardNote;
     private String rewardQuyetDinh;
 
-    public int getRewardId() { return rewardId; }
+    public int getRewardId() {
+        return rewardId; }
     public void setRewardId(int rewardId) { this.rewardId = rewardId; }
 
     public String getStudentId() { return studentId; }
