@@ -8,199 +8,209 @@ import java.awt.*;
 
 public class DisciplineView extends JPanel {
 
+    // ===== INPUT (CRUD) =====
+    public JTextField txtIdKyLuat, txtLyDo, txtSoQuyetDinh;
+
+    public JTextField txtMaSinhVien;
+    public JTextField txtTenSinhVien;
+
+    public JComboBox<String> cboHinhThuc;
+    public JDateChooser dateNgayKyLuat, dateNgayKetThuc;
+
+    // ===== INPUT (SEARCH)  =====
+    public JTextField txtIdKyLuatSearch, txtMaSinhVienSearch;
+    public JComboBox<String> cboHinhThucSearch;
+
+    // ===== BUTTONS =====
+    public JButton btnThem, btnXoa, btnSua, btnTim, btnMoi, btnQuayLai;
+
+    // ===== TABLE =====
+    public DefaultTableModel model;
+    public JTable table;
+
     public DisciplineView() {
         initUI();
     }
 
-    public JTextField txtIdKyLuat, txtLyDo, txtSoQuyetDinh;
-    public JComboBox<String> cboMaSinhVien;
-    public JTextField txtTenSinhVien;
-    public JComboBox<String> cboHinhThuc;
-
-    public JDateChooser dateNgayKyLuat, dateNgayKetThuc;
-
-    public JLabel lblIdKyLuat, lblHinhThuc, lblNgayKyLuat, lblLyDo, lblNgayKetThuc,
-            lblSoQuyetDinh, lblMaSinhVien, lblTenSinhVien;
-
-    public JButton btnThem, btnXoa, btnSua, btnQuayLai;
-
-    public DefaultTableModel model;
-    public JScrollPane scrollPane;
-    public JTable table;
-
     private void initUI() {
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JLabel lblTitle = new JLabel("Quản lý thông tin kỷ luật");
-        lblTitle.setBorder(BorderFactory.createEmptyBorder(30, 30, 20, 30));
         lblTitle.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        lblTitle.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         add(lblTitle, BorderLayout.NORTH);
 
-        add(formInfoInit(), BorderLayout.NORTH);
-        tableInit();
+        JPanel center = new JPanel(new BorderLayout(10, 10));
+        center.add(buildFormArea(), BorderLayout.NORTH);
+        center.add(buildTableArea(), BorderLayout.CENTER);
+
+        add(center, BorderLayout.CENTER);
     }
 
-    private JPanel formInfoInit() {
-        JPanel container = new JPanel(new BorderLayout());
+    private JPanel buildFormArea() {
+        JPanel wrapper = new JPanel(new BorderLayout(8, 8));
 
-        JLabel lblInfoTitle = new JLabel("Thông tin");
-        lblInfoTitle.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        lblInfoTitle.setBorder(BorderFactory.createEmptyBorder(10, 30, 0, 30));
-        container.add(lblInfoTitle, BorderLayout.NORTH);
+        // ===== FORM CRUD =====
+        JPanel formCrud = new JPanel(new GridBagLayout());
+        formCrud.setBorder(BorderFactory.createTitledBorder("Thông tin"));
 
-        JPanel form = new JPanel();
-        GroupLayout layout = new GroupLayout(form);
-        form.setLayout(layout);
+        GridBagConstraints g = new GridBagConstraints();
+        g.insets = new Insets(6, 10, 6, 10);
+        g.fill = GridBagConstraints.HORIZONTAL;
+        g.weightx = 0;
 
-        layout.setAutoCreateGaps(true);
-        layout.setAutoCreateContainerGaps(true);
+        int row = 0;
+        g.gridy = row;
 
+        // Row 0: Mã SV | Tên SV
+        g.gridx = 0; formCrud.add(new JLabel("Mã sinh viên"), g);
+        g.gridx = 1; g.weightx = 1.0;
+        txtMaSinhVien = new JTextField(12);
+        formCrud.add(txtMaSinhVien, g);
 
-        lblMaSinhVien = new JLabel("Mã sinh viên");
-        cboMaSinhVien = new JComboBox<>();
-        cboMaSinhVien.setEditable(true);
-
-        lblTenSinhVien = new JLabel("Tên sinh viên");
-        txtTenSinhVien = new JTextField();
+        g.gridx = 2; g.weightx = 0;
+        formCrud.add(new JLabel("Tên sinh viên"), g);
+        g.gridx = 3; g.weightx = 1.0;
+        txtTenSinhVien = new JTextField(22);
         txtTenSinhVien.setEditable(false);
+        formCrud.add(txtTenSinhVien, g);
 
-        // ===== KỶ LUẬT =====
-        lblIdKyLuat = new JLabel("Mã kỷ luật");
-        txtIdKyLuat = new JTextField();
+        // Row 1: Mã kỷ luật | Hình thức
+        row++;
+        g.gridy = row;
+
+        g.gridx = 0; g.weightx = 0;
+        formCrud.add(new JLabel("Mã kỷ luật"), g);
+        g.gridx = 1; g.weightx = 1.0;
+        txtIdKyLuat = new JTextField(12);
         txtIdKyLuat.setEditable(false);
+        formCrud.add(txtIdKyLuat, g);
 
-        lblHinhThuc = new JLabel("Hình thức");
+        g.gridx = 2; g.weightx = 0;
+        formCrud.add(new JLabel("Hình thức"), g);
+        g.gridx = 3; g.weightx = 1.0;
         cboHinhThuc = new JComboBox<>(new String[]{
                 "Khiển trách",
                 "Cảnh cáo",
                 "Đình chỉ học tập",
                 "Buộc thôi học"
         });
+        formCrud.add(cboHinhThuc, g);
 
-        lblNgayKyLuat = new JLabel("Ngày kỷ luật");
+        // Row 2: Ngày kỷ luật | Ngày kết thúc
+        row++;
+        g.gridy = row;
+
+        g.gridx = 0; g.weightx = 0;
+        formCrud.add(new JLabel("Ngày kỷ luật"), g);
+        g.gridx = 1; g.weightx = 1.0;
         dateNgayKyLuat = new JDateChooser();
         dateNgayKyLuat.setDateFormatString("yyyy-MM-dd");
+        dateNgayKyLuat.setPreferredSize(new Dimension(200, 28));
+        formCrud.add(dateNgayKyLuat, g);
 
-        lblLyDo = new JLabel("Lý do");
-        txtLyDo = new JTextField();
-
-        lblNgayKetThuc = new JLabel("Ngày kết thúc");
+        g.gridx = 2; g.weightx = 0;
+        formCrud.add(new JLabel("Ngày kết thúc"), g);
+        g.gridx = 3; g.weightx = 1.0;
         dateNgayKetThuc = new JDateChooser();
         dateNgayKetThuc.setDateFormatString("yyyy-MM-dd");
+        dateNgayKetThuc.setPreferredSize(new Dimension(200, 28));
+        formCrud.add(dateNgayKetThuc, g);
 
-        lblSoQuyetDinh = new JLabel("Số quyết định");
-        txtSoQuyetDinh = new JTextField();
+        // Row 3: Số quyết định | Lý do
+        row++;
+        g.gridy = row;
 
+        g.gridx = 0; g.weightx = 0;
+        formCrud.add(new JLabel("Số quyết định"), g);
+        g.gridx = 1; g.weightx = 1.0;
+        txtSoQuyetDinh = new JTextField(12);
+        formCrud.add(txtSoQuyetDinh, g);
+
+        g.gridx = 2; g.weightx = 0;
+        formCrud.add(new JLabel("Lý do"), g);
+        g.gridx = 3; g.weightx = 1.0;
+        txtLyDo = new JTextField(22);
+        formCrud.add(txtLyDo, g);
+
+        // ===== FORM SEARCH  =====
+        JPanel formSearch = new JPanel(new GridBagLayout());
+        formSearch.setBorder(BorderFactory.createTitledBorder("Tìm kiếm"));
+
+        GridBagConstraints s = new GridBagConstraints();
+        s.insets = new Insets(6, 10, 6, 10);
+        s.fill = GridBagConstraints.HORIZONTAL;
+        s.weightx = 0;
+
+        int srow = 0;
+        s.gridy = srow;
+
+        // Search Row 0: Mã kỷ luật | Mã sinh viên
+        s.gridx = 0; formSearch.add(new JLabel("Mã kỷ luật"), s);
+        s.gridx = 1; s.weightx = 1.0;
+        txtIdKyLuatSearch = new JTextField(12);
+        formSearch.add(txtIdKyLuatSearch, s);
+
+        s.gridx = 2; s.weightx = 0;
+        formSearch.add(new JLabel("Mã sinh viên"), s);
+        s.gridx = 3; s.weightx = 1.0;
+        txtMaSinhVienSearch = new JTextField(12);
+        formSearch.add(txtMaSinhVienSearch, s);
+
+        // Search Row 1: Hình thức
+        srow++;
+        s.gridy = srow;
+
+        s.gridx = 0; s.weightx = 0;
+        formSearch.add(new JLabel("Hình thức"), s);
+        s.gridx = 1; s.weightx = 1.0;
+        cboHinhThucSearch = new JComboBox<>(new String[]{
+                "", "Khiển trách", "Cảnh cáo", "Đình chỉ học tập", "Buộc thôi học"
+        });
+        formSearch.add(cboHinhThucSearch, s);
+
+        // ===== Buttons bar =====
+        JPanel btnBar = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 6));
         btnThem = new JButton("Thêm");
-        btnXoa = new JButton("Xóa");
         btnSua = new JButton("Sửa");
+        btnXoa = new JButton("Xóa");
+        btnTim = new JButton("Tìm");
+        btnMoi = new JButton("Mới");
         btnQuayLai = new JButton("Quay lại");
 
-        // Fix chiều cao date
-        Dimension d = new Dimension(200, 28);
-        dateNgayKyLuat.setPreferredSize(d);
-        dateNgayKetThuc.setPreferredSize(d);
+        btnBar.add(btnThem);
+        btnBar.add(btnSua);
+        btnBar.add(btnXoa);
+        btnBar.add(btnTim);
+        btnBar.add(btnMoi);
+        btnBar.add(btnQuayLai);
 
+        wrapper.add(formCrud, BorderLayout.NORTH);
+        wrapper.add(formSearch, BorderLayout.CENTER);
+        wrapper.add(btnBar, BorderLayout.SOUTH);
 
-        layout.setHorizontalGroup(
-                layout.createSequentialGroup()
-                        .addGap(30)
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addComponent(lblMaSinhVien)
-                                .addComponent(lblTenSinhVien)
-                                .addComponent(lblIdKyLuat)
-                                .addComponent(lblHinhThuc)
-                                .addComponent(lblNgayKyLuat)
-                                .addComponent(lblLyDo)
-                                .addComponent(lblNgayKetThuc)
-                                .addComponent(lblSoQuyetDinh)
-                        )
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addComponent(cboMaSinhVien)
-                                .addComponent(txtTenSinhVien)
-                                .addComponent(txtIdKyLuat)
-                                .addComponent(cboHinhThuc)
-                                .addComponent(dateNgayKyLuat)
-                                .addComponent(txtLyDo)
-                                .addComponent(dateNgayKetThuc)
-                                .addComponent(txtSoQuyetDinh)
-                                .addGroup(GroupLayout.Alignment.CENTER, layout.createSequentialGroup()
-                                        .addComponent(btnThem)
-                                        .addComponent(btnXoa)
-                                        .addComponent(btnSua)
-                                        .addComponent(btnQuayLai)
-                                )
-                        )
-                        .addGap(30)
-        );
-
-
-        layout.setVerticalGroup(
-                layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblMaSinhVien)
-                                .addComponent(cboMaSinhVien)
-                        )
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblTenSinhVien)
-                                .addComponent(txtTenSinhVien)
-                        )
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblIdKyLuat)
-                                .addComponent(txtIdKyLuat)
-                        )
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblHinhThuc)
-                                .addComponent(cboHinhThuc)
-                        )
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblNgayKyLuat)
-                                .addComponent(dateNgayKyLuat)
-                        )
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblLyDo)
-                                .addComponent(txtLyDo)
-                        )
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblNgayKetThuc)
-                                .addComponent(dateNgayKetThuc)
-                        )
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(lblSoQuyetDinh)
-                                .addComponent(txtSoQuyetDinh)
-                        )
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(btnThem)
-                                .addComponent(btnXoa)
-                                .addComponent(btnSua)
-                                .addComponent(btnQuayLai)
-                        )
-        );
-
-        container.add(form, BorderLayout.CENTER);
-        return container;
+        return wrapper;
     }
 
-    private void tableInit() {
+    private JScrollPane buildTableArea() {
         model = new DefaultTableModel(
                 new String[]{
-                        "Mã kỷ luật", "Mã sinh viên","Tên sinh viên", "Hình thức",
+                        "Mã kỷ luật", "Mã sinh viên", "Tên sinh viên", "Hình thức",
                         "Ngày kỷ luật", "Ngày kết thúc", "Số quyết định", "Lý do"
                 }, 0
-        );
+        ) {
+            @Override public boolean isCellEditable(int row, int column) { return false; }
+        };
 
         table = new JTable(model);
         table.setFillsViewportHeight(true);
-        table.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        table.setRowHeight(30);
-        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 16));
+        table.setRowHeight(28);
+        table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
 
-        scrollPane = new JScrollPane(table);
-
-        JPanel tablePanel = new JPanel(new BorderLayout());
-        tablePanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
-        tablePanel.add(scrollPane, BorderLayout.CENTER);
-
-        add(tablePanel, BorderLayout.CENTER);
+        JScrollPane sp = new JScrollPane(table);
+        sp.setBorder(BorderFactory.createTitledBorder("Danh sách"));
+        return sp;
     }
 }
