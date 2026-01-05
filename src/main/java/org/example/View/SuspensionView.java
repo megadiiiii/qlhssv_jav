@@ -102,7 +102,7 @@ public class SuspensionView extends JPanel {
         formCrud.add(new JLabel("Trạng thái"), g);
         g.gridx = 1;
         g.weightx = 0.5;
-        formCrud.add(cboStatus = new JComboBox<>(new String[]{"Bị từ chối", "Chờ duyệt", "Đã được duyệt"}), g);
+        formCrud.add(cboStatus = new JComboBox<>(new String[]{"Chờ duyệt", "Bị từ chối", "Đã được duyệt"}), g);
 
         g.gridx = 2;
         g.weightx = 0;

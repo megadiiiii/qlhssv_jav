@@ -300,10 +300,17 @@ public class RoleController {
     public void clearInput() {
         view.txtTenLop.setText("");
         view.txtTenSinhVien.setText("");
-        view.cboMaLop.setSelectedIndex(0);
-        view.cboMaSinhVien.setSelectedIndex(0);
-        view.cboVaiTro.setSelectedIndex(0);
+
+        if (view.cboMaLop.getItemCount() > 0)
+            view.cboMaLop.setSelectedIndex(0);
+
+        if (view.cboMaSinhVien.getItemCount() > 0)
+            view.cboMaSinhVien.setSelectedIndex(0);
+
+        if (view.cboVaiTro.getItemCount() > 0)
+            view.cboVaiTro.setSelectedIndex(0);
     }
+
 
     private void cellclick() {
         int row = view.table.getSelectedRow();

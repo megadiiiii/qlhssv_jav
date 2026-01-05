@@ -434,7 +434,6 @@ public class StudentController {
     }
 
     public void onSearch() {
-        clearInput();
         String studentId = view.txtIdSearch.getText().trim();
         String studentName = view.txtFullNameSearch.getText().trim();
         Faculties facu = (Faculties) view.cboFacuSearch.getSelectedItem();

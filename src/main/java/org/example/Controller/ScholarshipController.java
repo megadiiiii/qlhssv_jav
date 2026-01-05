@@ -139,7 +139,7 @@ public class ScholarshipController {
     }
 
     private String getDrlLevelCombo() {
-        Object o = view.cboScoreLevel.getSelectedItem();
+        Object o = view.cboDrlLevel.getSelectedItem();
         return o == null ? "" : o.toString();
     }
 

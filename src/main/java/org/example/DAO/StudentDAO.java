@@ -263,7 +263,7 @@ public class StudentDAO {
                 classInfo.setClassId(rs.getString("class_id"));
                 classInfo.setClassName(rs.getString("class_name"));
                 classInfo.setCohort(cohort);
-                classInfo.setMajor(major);
+                classInfo.setMajor(m);
 
                 Student st = new Student();
                 st.setStudentId(rs.getString("student_id"));
@@ -277,7 +277,7 @@ public class StudentDAO {
                 st.setCitizenId(rs.getString("citizen_id"));
                 st.setStatus(rs.getString("status"));
                 st.setFaculty(faculty);
-                st.setMajor(major);
+                st.setMajor(m);
                 st.setClassInfo(classInfo);
                 st.setCohort(cohort);
 
