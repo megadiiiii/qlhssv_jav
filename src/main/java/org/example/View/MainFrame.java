@@ -78,10 +78,10 @@ public class MainFrame extends JFrame {
         new SusController(suspensionView, this, suspensionDAO);
         contentPanel.add(suspensionView, "BL");
 
-//        ScholarshipDAO scholarshipView = new ScholarshipView();
-//        ScholarshipDAO scholarshipDAO = new ScholarshipDAO();
-//        new ScholarshipController(scholarshipView, this, scholarshipDAO);
-//        contentPanel.add(scholarshipView, "HB");
+        RoleView roleView = new RoleView();
+        RoleDAO roleDAO = new RoleDAO();
+        new RoleController(roleView, this, roleDAO);
+        contentPanel.add(roleView, "CBL");
 
         add(contentPanel);
 

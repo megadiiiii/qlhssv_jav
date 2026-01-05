@@ -19,6 +19,13 @@ public class Role {
         this.studentRole = studentRole;
     }
 
+    public Role(int roleId, String classId, String studentRole, String studentId) {
+        this.roleId = roleId;
+        this.classId = classId;
+        this.studentRole = studentRole;
+        this.studentId = studentId;
+    }
+
     public int getRoleId() { return roleId; }
     public void setRoleId(int roleId) { this.roleId = roleId; }
 

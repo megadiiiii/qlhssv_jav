@@ -112,46 +112,38 @@ public class RoleDAO {
     }
 
     // ===== loadtable theo lớp =====
-    public List<Role> findAllByClass(String classId) {
+    public List<Role> findAll() {
         List<Role> list = new ArrayList<>();
+        String sql = """
+                SELECT r.role_id, s.student_id, 
+                       CONCAT(s.student_lastName, ' ', s.student_firstName) AS student_name, 
+                       c.class_id, c.class_name, r.student_role 
+                FROM role r JOIN student s ON r.student_id = s.student_id 
+                JOIN class c ON s.class_id = c.class_id 
+                """;
 
-        String sql =
-                "SELECT r.role_id, s.student_id, " +
-                        "CONCAT(s.student_lastName, ' ', s.student_firstName) AS student_name, " +
-                        "c.class_id, c.class_name, " +
-                        "r.student_role " +
-                        "FROM role r " +
-                        "JOIN student s ON r.student_id = s.student_id " +
-                        "JOIN class c ON s.class_id = c.class_id " +
-                        "WHERE c.class_id = ? " +
-                        "ORDER BY r.role_id DESC";
-
-        try (Connection c = dbConn.getConnection();
-             PreparedStatement ps = c.prepareStatement(sql)) {
-
-            ps.setString(1, classId);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    list.add(new Role(
-                            rs.getInt("role_id"),
-                            rs.getString("student_id"),
-                            rs.getString("student_name"),
-                            rs.getString("class_id"),
-                            rs.getString("class_name"),
-                            rs.getString("student_role")
-                    ));
-                }
+        try {
+            Connection conn = dbConn.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Role(
+                        rs.getInt("role_id"),
+                        rs.getString("student_id"),
+                        rs.getString("student_name"),
+                        rs.getString("class_id"),
+                        rs.getString("class_name"),
+                        rs.getString("student_role")
+                ));
             }
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return list;
     }
 
     // ===== search trong lớp =====
-    public List<Role> search(String classId, Integer roleId, String studentId, String studentRole) {
+    public List<Role> search(String classId,String studentRole) {
         List<Role> list = new ArrayList<>();
 
         StringBuilder sql = new StringBuilder(
@@ -173,21 +165,10 @@ public class RoleDAO {
             params.add(classId.trim());
         }
 
-        if (roleId != null) {
-            sql.append(" AND r.role_id = ? ");
-            params.add(roleId);
-        }
-        if (studentId != null && !studentId.trim().isEmpty()) {
-            sql.append(" AND s.student_id LIKE ? ");
-            params.add("%" + studentId.trim() + "%");
-        }
-
         if (studentRole != null && !studentRole.trim().isEmpty()) {
             sql.append(" AND r.student_role = ? ");
             params.add(studentRole.trim());
         }
-
-        sql.append(" ORDER BY r.role_id ASC");
 
         try (Connection c = dbConn.getConnection();
              PreparedStatement ps = c.prepareStatement(sql.toString())) {
@@ -217,46 +198,48 @@ public class RoleDAO {
     }
 
     // ===== them =====
-    public void insert(Role r) throws SQLException {
-        Connection conn = dbConn.getConnection();
+    public int insert(Role r) {
         String sql = "INSERT INTO role (student_id, student_role) VALUES (?, ?)";
 
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, r.getStudentId());
-        ps.setString(2, r.getStudentRole());
-
-        ps.executeUpdate();
-        ps.close();
-        conn.close();
+        try (Connection conn = dbConn.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, r.getStudentId());
+            ps.setString(2, r.getStudentRole());
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     // ===== xoa =====
-    public int delete(Role r) throws SQLException {
-        Connection conn = dbConn.getConnection();
+    public int delete(int roleId) {
         String sql = "DELETE FROM role WHERE role_id = ?";
 
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setInt(1, r.getRoleId());
-
-        int row = ps.executeUpdate();
-        ps.close();
-        conn.close();
-        return row;
+        try (Connection conn = dbConn.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, roleId);
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     // ===== sua =====
-    public int update(Role r) throws SQLException {
-        Connection conn = dbConn.getConnection();
+    public int update(Role r){
         String sql = "UPDATE role SET student_id = ?, student_role = ? WHERE role_id = ?";
 
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, r.getStudentId());
-        ps.setString(2, r.getStudentRole());
-        ps.setInt(3, r.getRoleId());
+        try (Connection conn = dbConn.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, r.getStudentId());
+            ps.setString(2, r.getStudentRole());
+            ps.setInt(3, r.getRoleId());
 
-        int row = ps.executeUpdate();
-        ps.close();
-        conn.close();
-        return row;
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 }

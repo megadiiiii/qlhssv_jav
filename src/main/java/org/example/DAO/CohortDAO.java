@@ -12,7 +12,7 @@ import java.util.List;
 public class CohortDAO {
     public List<Cohort> getAllCohorts() {
         List<Cohort> list = new ArrayList<>();
-        String sql = "SELECT * FROM cohort";
+        String sql = "SELECT * FROM cohort order by cohort_name asc";
 
         try {
             Connection conn = dbConn.getConnection();
