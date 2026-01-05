@@ -8,7 +8,6 @@ import java.awt.*;
 
 public class MajorView extends JPanel {
 
-    //
     //INPUT (CRUD)
     public JTextField txtMajorId, txtMajorName;
     public JComboBox<Faculties> cboFacu;
