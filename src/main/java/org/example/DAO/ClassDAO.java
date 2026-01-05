@@ -22,10 +22,7 @@ public class ClassDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                list.add(new Faculties(
-                        rs.getString("facu_id"),
-                        rs.getString("facu_name")
-                ));
+                list.add(new Faculties(rs.getString("facu_id"), rs.getString("facu_name")));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -44,27 +41,23 @@ public class ClassDAO {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                list.add(new Major(
-                        rs.getString("major_id"),
-                        rs.getString("major_name"),
-                        rs.getString("facu_id")
-                ));
+                list.add(new Major(rs.getString("major_id"), rs.getString("major_name"), rs.getString("facu_id")));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return list;
     }
+
     public List<ClassInfo> getAllClass() {
         List<ClassInfo> list = new ArrayList<>();
-
         String sql = """
-                SELECT c.class_id, c.class_name,
-                       f.facu_id, f.facu_name,
-                       m.major_id, m.major_name
+                SELECT c.class_id, c.class_name, c.cohort,
+                       m.major_id, m.major_name,
+                       f.facu_id, f.facu_name
                 FROM class c
-                JOIN faculties f ON f.facu_id = c.facu_id
                 JOIN major m ON m.major_id = c.major_id
+                JOIN faculties f ON f.facu_id = m.facu_id
                 """;
 
         try (Connection conn = dbConn.getConnection();
@@ -77,6 +70,7 @@ public class ClassDAO {
                         rs.getString("class_name"),
                         rs.getString("facu_id"),
                         rs.getString("major_id"),
+                        rs.getInt("cohort"),      // lấy cohort từ DB
                         rs.getString("facu_name"),
                         rs.getString("major_name")
                 ));
@@ -88,15 +82,15 @@ public class ClassDAO {
     }
 
     public boolean insert(ClassInfo c) {
-        String sql = "INSERT INTO class(class_id, class_name, facu_id, major_id) VALUES (?,?,?,?)";
+        String sql = "INSERT INTO class(class_id, class_name, major_id, cohort) VALUES (?,?,?,?)";
 
         try (Connection conn = dbConn.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, c.getClassId());
             ps.setString(2, c.getClassName());
-            ps.setString(3, c.getFacuId());
-            ps.setString(4, c.getMajorId());
+            ps.setString(3, c.getMajorId());
+            ps.setInt(4, c.getCohort());
 
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
@@ -104,12 +98,13 @@ public class ClassDAO {
         }
         return false;
     }
+
     public boolean update(ClassInfo c) {
         String sql = """
                 UPDATE class
                 SET class_name=?,
-                    facu_id=?,
-                    major_id=?
+                    major_id=?,
+                    cohort=?
                 WHERE class_id=?
                 """;
 
@@ -117,8 +112,8 @@ public class ClassDAO {
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, c.getClassName());
-            ps.setString(2, c.getFacuId());
-            ps.setString(3, c.getMajorId());
+            ps.setString(2, c.getMajorId());
+            ps.setInt(3, c.getCohort());
             ps.setString(4, c.getClassId());
 
             return ps.executeUpdate() > 0;
@@ -144,14 +139,13 @@ public class ClassDAO {
 
     public List<ClassInfo> search(String id, String name) {
         List<ClassInfo> list = new ArrayList<>();
-
         String sql = """
-                SELECT c.class_id, c.class_name,
-                       f.facu_id, f.facu_name,
-                       m.major_id, m.major_name
+                SELECT c.class_id, c.class_name, c.cohort,
+                       m.major_id, m.major_name,
+                       f.facu_id, f.facu_name
                 FROM class c
-                JOIN faculties f ON f.facu_id = c.facu_id
                 JOIN major m ON m.major_id = c.major_id
+                JOIN faculties f ON f.facu_id = m.facu_id
                 WHERE (?='' OR c.class_id LIKE ?)
                   AND (?='' OR c.class_name LIKE ?)
                 """;
@@ -171,6 +165,7 @@ public class ClassDAO {
                         rs.getString("class_name"),
                         rs.getString("facu_id"),
                         rs.getString("major_id"),
+                        rs.getInt("cohort"),
                         rs.getString("facu_name"),
                         rs.getString("major_name")
                 ));
