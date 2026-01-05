@@ -42,6 +42,10 @@ public class MenuNavController {
                 currentFrame.showView("TEACHER")
         );
 
+        menu.sus.addActionListener(e ->
+                currentFrame.showView("SUSPENSION")
+        );
+
         menu.logoutItem.addActionListener(e -> {
             new LoginView().setVisible(true);
             currentFrame.dispose();

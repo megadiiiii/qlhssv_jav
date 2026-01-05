@@ -1,10 +1,7 @@
 package org.example.View;
 
 import org.example.Controller.*;
-import org.example.DAO.CohortDAO;
-import org.example.DAO.FacuDAO;
-import org.example.DAO.MajorDAO;
-import org.example.DAO.TeacherDAO;
+import org.example.DAO.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -60,6 +57,13 @@ public class MainFrame extends JFrame {
         contentPanel.add(new RewardView(), "KT");
 
         contentPanel.add(new RewardView(), "KL");
+
+        SuspensionView suspensionView = new SuspensionView();
+        SuspensionDAO suspensionDAO = new SuspensionDAO();
+        new SusController(suspensionView, suspensionDAO);
+        contentPanel.add(suspensionView, "SUSPENSION");
+
+
 
         add(contentPanel);
 
