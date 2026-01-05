@@ -2,7 +2,6 @@ package org.example.View;
 
 import org.example.Controller.*;
 import org.example.DAO.*;
-import org.example.Model.Discipline;
 
 import javax.swing.*;
 import java.awt.*;
@@ -73,6 +72,16 @@ public class MainFrame extends JFrame {
         ScholarshipDAO scholarshipDAO = new ScholarshipDAO();
         new ScholarshipController(scholarshipView, this, scholarshipDAO);
         contentPanel.add(scholarshipView, "HB");
+
+        SuspensionView suspensionView = new SuspensionView();
+        SuspensionDAO suspensionDAO = new SuspensionDAO();
+        new SusController(suspensionView, this, suspensionDAO);
+        contentPanel.add(suspensionView, "BL");
+
+//        ScholarshipDAO scholarshipView = new ScholarshipView();
+//        ScholarshipDAO scholarshipDAO = new ScholarshipDAO();
+//        new ScholarshipController(scholarshipView, this, scholarshipDAO);
+//        contentPanel.add(scholarshipView, "HB");
 
         add(contentPanel);
 

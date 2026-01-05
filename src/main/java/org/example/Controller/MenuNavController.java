@@ -46,6 +46,14 @@ public class MenuNavController {
                 currentFrame.showView("HB")
         );
 
+        menu.bl.addActionListener(e ->
+                currentFrame.showView("BL")
+        );
+
+        menu.cbl.addActionListener(e ->
+                currentFrame.showView("CBL")
+        );
+
         menu.logoutItem.addActionListener(e -> {
             new LoginView().setVisible(true);
             currentFrame.dispose();

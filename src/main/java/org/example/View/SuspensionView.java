@@ -1,25 +1,25 @@
 package org.example.View;
 
 
-import org.example.Model.Suspension;
+import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-public class  SuspensionView extends JPanel {
+public class SuspensionView extends JPanel {
 
 
-    public JTextField txtSuspensionId,txtStudentId;
-    public JSpinner spStartDate, spEndDate;
+    public JTextField txtStudentName;
+    public JDateChooser dcStartDate, dcEndDate;
     public JTextArea txtReason;
     public JComboBox<String> cboStatus;
+    public JComboBox<String> cboStudentId;
 
 
     public JTextField txtStudentIdSearch;
-    public JComboBox<String> cboStatusSearch;
 
-    public JButton btnAdd, btnApprove, btnReject, btnSearch, btnBack;
+    public JButton btnAdd, btnApprove, btnReject, btnSearch, btnBack, btnExport, btnDelete;
 
 
     public DefaultTableModel model;
@@ -48,113 +48,104 @@ public class  SuspensionView extends JPanel {
     private JPanel buildFormArea() {
         JPanel wrapper = new JPanel(new BorderLayout(8, 8));
 
-        // ===== FORM CRUD =====
+        //
+        //Form CRUD
         JPanel formCrud = new JPanel(new GridBagLayout());
-        formCrud.setBorder(BorderFactory.createTitledBorder("Thông tin bảo lưu"));
+        formCrud.setBorder(BorderFactory.createTitledBorder("Thông tin"));
 
         GridBagConstraints g = new GridBagConstraints();
         g.insets = new Insets(6, 20, 6, 20);
         g.fill = GridBagConstraints.HORIZONTAL;
+        g.weightx = 0;
 
         int row = 0;
+
         g.gridy = row;
 
         g.gridx = 0;
-        formCrud.add(new JLabel("Mã bảo lưu"), g);
+        formCrud.add(new JLabel("Mã SV"), g);
         g.gridx = 1;
-        txtSuspensionId = new JTextField(12);
-        txtSuspensionId.setEditable(false); // ID không cho sửa
-        formCrud.add(txtSuspensionId, g);
+        g.weightx = 0.5;
+        cboStudentId = new JComboBox<>();
+        formCrud.add(cboStudentId, g);
 
         g.gridx = 2;
-        formCrud.add(new JLabel("Mã sinh viên"), g);
+        g.weightx = 0;
+        formCrud.add(new JLabel("Tên SV"), g);
         g.gridx = 3;
-        txtStudentId = new JTextField(12);
-        formCrud.add(txtStudentId, g);
-
-        // ===== ROW 2 =====
+        g.weightx = 0.1;
+        txtStudentName = new JTextField(8);
+        formCrud.add(txtStudentName, g);
         row++;
-        g.gridy = row;
 
+        // Row 1
+        g.gridy = row;
         g.gridx = 0;
+        g.weightx = 0;
         formCrud.add(new JLabel("Ngày bắt đầu"), g);
         g.gridx = 1;
-        spStartDate = new JSpinner(new SpinnerDateModel());
-        spStartDate.setEditor(new JSpinner.DateEditor(spStartDate, "yyyy-MM-dd"));
-        formCrud.add(spStartDate, g);
+        g.weightx = 0.5;
+        formCrud.add(dcStartDate = new JDateChooser(), g);
 
         g.gridx = 2;
+        g.weightx = 0;
         formCrud.add(new JLabel("Ngày kết thúc"), g);
         g.gridx = 3;
-        spEndDate = new JSpinner(new SpinnerDateModel());
-        spEndDate.setEditor(new JSpinner.DateEditor(spEndDate, "yyyy-MM-dd"));
-        formCrud.add(spEndDate, g);
-
-        // ===== ROW 3 =====
+        g.weightx = 0.5;
+        formCrud.add(dcEndDate = new JDateChooser(), g);
         row++;
-        g.gridy = row;
 
+        // Row 1
+        g.gridy = row;
         g.gridx = 0;
+        g.weightx = 0;
         formCrud.add(new JLabel("Trạng thái"), g);
         g.gridx = 1;
-        cboStatus = new JComboBox<>(new String[]{
-                "PENDING", "APPROVED", "REJECTED"
-        });
-        formCrud.add(cboStatus, g);
+        g.weightx = 0.5;
+        formCrud.add(cboStatus = new JComboBox<>(new String[]{"Bị từ chối", "Chờ duyệt", "Đã được duyệt"}), g);
 
-        // ===== ROW 4 =====
-        row++;
-        g.gridy = row;
-
-        g.gridx = 0;
-        g.anchor = GridBagConstraints.NORTH;
+        g.gridx = 2;
+        g.weightx = 0;
         formCrud.add(new JLabel("Lý do"), g);
+        g.gridx = 3;
+        g.weightx = 0.5;
+        formCrud.add(txtReason = new JTextArea(), g);
 
-        g.gridx = 1;
-        g.gridwidth = 3;
-        txtReason = new JTextArea(3, 30);
-        txtReason.setLineWrap(true);
-        txtReason.setWrapStyleWord(true);
-        formCrud.add(new JScrollPane(txtReason), g);
-
-        wrapper.add(formCrud, BorderLayout.CENTER);
-
-        // ===== FORM SEARCH =====
+//Form SEARCH
         JPanel formSearch = new JPanel(new GridBagLayout());
         formSearch.setBorder(BorderFactory.createTitledBorder("Tìm kiếm"));
 
         GridBagConstraints s = new GridBagConstraints();
-        s.insets = new Insets(6, 20, 6, 20);
+        s.insets = new Insets(6, 10, 6, 10);
         s.fill = GridBagConstraints.HORIZONTAL;
+        s.weightx = 0;
 
-        s.gridy = 0;
+        int srow = 0;
+        s.gridy = srow;
 
         s.gridx = 0;
-        formSearch.add(new JLabel("Mã sinh viên"), s);
+        formSearch.add(new JLabel("Mã SV"), s);
         s.gridx = 1;
-        txtStudentIdSearch = new JTextField(12);
+        s.weightx = 3;
+        txtStudentIdSearch = new JTextField(44);
         formSearch.add(txtStudentIdSearch, s);
 
-        s.gridx = 2;
-        formSearch.add(new JLabel("Trạng thái"), s);
-        s.gridx = 3;
-        cboStatusSearch = new JComboBox<>();
-        cboStatusSearch.insertItemAt(null, 0);
-        cboStatusSearch.setSelectedIndex(0);
-        formSearch.add(cboStatusSearch, s);
-
-        // ===== BUTTON BAR =====
+        //5 buttons in one bar
         JPanel btnBar = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 6));
         btnAdd = new JButton("Thêm");
         btnApprove = new JButton("Duyệt");
         btnReject = new JButton("Từ chối");
         btnSearch = new JButton("Tìm kiếm");
+        btnExport = new JButton("Xuất Excel");
+        btnDelete = new JButton("Xóa");
         btnBack = new JButton("Quay lại");
 
         btnBar.add(btnAdd);
         btnBar.add(btnApprove);
         btnBar.add(btnReject);
         btnBar.add(btnSearch);
+        btnBar.add(btnDelete);
+        btnBar.add(btnExport);
         btnBar.add(btnBack);
 
         wrapper.add(formCrud, BorderLayout.NORTH);
@@ -166,10 +157,7 @@ public class  SuspensionView extends JPanel {
 
     private JScrollPane buildTableArea() {
         model = new DefaultTableModel(
-                new String[]{
-                        "Mã SV", "Ngày bắt đầu", "Ngày kết thúc",
-                        "Lý do", "Trạng thái", "Ngày yêu cầu"
-                }, 0
+                new String[]{"SUS_ID", "Mã SV", "Tên SV", "Ngày bắt đầu", "Ngày kết thúc", "Lý do", "Trạng thái"}, 0
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -178,15 +166,18 @@ public class  SuspensionView extends JPanel {
         };
 
         table = new JTable(model);
+        table.setFillsViewportHeight(true);
         table.setRowHeight(28);
         table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
 
+        // Ẩn cột ID
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setWidth(0);
+
         JScrollPane sp = new JScrollPane(table);
-        sp.setBorder(BorderFactory.createTitledBorder("Danh sách bảo lưu"));
+        sp.setBorder(BorderFactory.createTitledBorder("Danh sách"));
         return sp;
     }
-
-
-
 }

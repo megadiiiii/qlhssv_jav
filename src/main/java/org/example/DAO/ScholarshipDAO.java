@@ -16,8 +16,7 @@ public class ScholarshipDAO {
     public List<Scholarship> findAll() {
         List<Scholarship> list = new ArrayList<>();
 
-        String sql =
-                """
+        String sql = """
                         SELECT scholarship_id, st.student_id,
                                CONCAT(st.student_lastName, ' ', st.student_firstName) AS student_name,
                                score_level, drl_level, scholarship_level, semester 

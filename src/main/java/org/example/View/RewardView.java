@@ -16,10 +16,8 @@ public class RewardView extends JPanel {
     public JTextField txtRewardId, txtRewardQuyetDinh, txtRewardNote;
     public JComboBox<String> cboStudentId;
     public JTextField txtStudentName;
-    public JTextField txtStudentIdSearch;
 
     public JDateChooser dcRewardDate;
-    public JDateChooser dcRewardDateSearch;
 
     public JButton btnAddReward, btnDeleteReward, btnEditReward, btnExportReward, btnBack;
 
