@@ -1,4 +1,3 @@
-// view
 package org.example.View;
 
 import javax.swing.*;
@@ -10,12 +9,15 @@ public class RoleView extends JPanel {
     // ===== INPUT (CRUD) =====
     public JTextField txtRoleId;
 
-    public JTextField txtMaSinhVien;
+    public JComboBox<String> cboMaLop;
+    public JTextField txtTenLop;
+
+    public JComboBox<String> cboMaSinhVien;
     public JTextField txtTenSinhVien;
 
     public JComboBox<String> cboVaiTro;
 
-    // ===== INPUT (SEARCH)  =====
+    // ===== INPUT (SEARCH) =====
     public JTextField txtRoleIdSearch, txtMaSinhVienSearch;
     public JComboBox<String> cboVaiTroSearch;
 
@@ -61,11 +63,30 @@ public class RoleView extends JPanel {
         int row = 0;
         g.gridy = row;
 
-        // Row 0: Mã SV | Tên SV
-        g.gridx = 0; formCrud.add(new JLabel("Mã sinh viên"), g);
+        // Row 0: Mã lớp | Tên lớp
+        g.gridx = 0; formCrud.add(new JLabel("Mã lớp"), g);
         g.gridx = 1; g.weightx = 1.0;
-        txtMaSinhVien = new JTextField(12);
-        formCrud.add(txtMaSinhVien, g);
+        cboMaLop = new JComboBox<>();
+        cboMaLop.setPreferredSize(new Dimension(200, 28));
+        formCrud.add(cboMaLop, g);
+
+        g.gridx = 2; g.weightx = 0;
+        formCrud.add(new JLabel("Tên lớp"), g);
+        g.gridx = 3; g.weightx = 1.0;
+        txtTenLop = new JTextField(22);
+        txtTenLop.setEditable(false);
+        formCrud.add(txtTenLop, g);
+
+        // Row 1: Mã SV | Tên SV
+        row++;
+        g.gridy = row;
+
+        g.gridx = 0; g.weightx = 0;
+        formCrud.add(new JLabel("Mã sinh viên"), g);
+        g.gridx = 1; g.weightx = 1.0;
+        cboMaSinhVien = new JComboBox<>();
+        cboMaSinhVien.setPreferredSize(new Dimension(200, 28));
+        formCrud.add(cboMaSinhVien, g);
 
         g.gridx = 2; g.weightx = 0;
         formCrud.add(new JLabel("Tên sinh viên"), g);
@@ -74,7 +95,7 @@ public class RoleView extends JPanel {
         txtTenSinhVien.setEditable(false);
         formCrud.add(txtTenSinhVien, g);
 
-        // Row 1: Role ID | Vai trò
+        // Row 2: Role ID | Vai trò
         row++;
         g.gridy = row;
 
@@ -89,14 +110,11 @@ public class RoleView extends JPanel {
         formCrud.add(new JLabel("Vai trò"), g);
         g.gridx = 3; g.weightx = 1.0;
         cboVaiTro = new JComboBox<>(new String[]{
-                "Lớp trưởng",
-                "Lớp phó",
-                "Bí thư",
-                "Cán sự"
+                "Lớp trưởng", "Lớp phó", "Bí thư", "Cán sự"
         });
         formCrud.add(cboVaiTro, g);
 
-        // ===== FORM SEARCH  =====
+        // ===== FORM SEARCH =====
         JPanel formSearch = new JPanel(new GridBagLayout());
         formSearch.setBorder(BorderFactory.createTitledBorder("Tìm kiếm"));
 
@@ -157,13 +175,10 @@ public class RoleView extends JPanel {
 
     private JScrollPane buildTableArea() {
         model = new DefaultTableModel(
-                new String[]{
-                        "Role ID", "Mã sinh viên", "Tên sinh viên", "Vai trò"
-                }, 0
+                new String[]{"Role ID", "Mã lớp", "Tên lớp", "Mã sinh viên", "Tên sinh viên", "Vai trò"}, 0
         ) {
             @Override public boolean isCellEditable(int row, int column) { return false; }
         };
-
         table = new JTable(model);
         table.setFillsViewportHeight(true);
         table.setRowHeight(28);

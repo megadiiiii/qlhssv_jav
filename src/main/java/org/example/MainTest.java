@@ -2,34 +2,26 @@ package org.example;
 
 import org.example.Controller.RoleController;
 import org.example.DAO.RoleDAO;
-import org.example.View.MainFrame;
 import org.example.View.RoleView;
 
 import javax.swing.*;
 
-public class MainTest
-{
+public class MainTest {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (Exception ignored) {}
+            JFrame frame = new JFrame("Quản lý vai trò sinh viên");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(1100, 750);
+            frame.setLocationRelativeTo(null);
 
-            // MainFrame của project m
-            MainFrame mainFrame = new MainFrame();
+            RoleView view = new RoleView();
+            RoleDAO dao = new RoleDAO();
 
-            // View + DAO + Controller
-            RoleView roleView = new RoleView();
-            RoleDAO roleDAO = new RoleDAO();
-            new RoleController(roleView, mainFrame, roleDAO);
+            // MainFrame = null giống MaintestGV
+            new RoleController(view, null, dao);
 
-            // Gắn RoleView vào frame để test
-            mainFrame.setTitle("TEST ROLE");
-            mainFrame.setContentPane(roleView);
-            mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            mainFrame.setSize(1100, 700);
-            mainFrame.setLocationRelativeTo(null);
-            mainFrame.setVisible(true);
+            frame.setContentPane(view);
+            frame.setVisible(true);
         });
     }
 }
