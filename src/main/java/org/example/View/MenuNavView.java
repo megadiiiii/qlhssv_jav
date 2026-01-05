@@ -36,6 +36,9 @@ public class MenuNavView extends JMenuBar {
         hc.add(kl);
         add(hc);
 
+
+
+
         add(Box.createHorizontalGlue());
 
         JMenu logout = new JMenu("Tài khoản");
