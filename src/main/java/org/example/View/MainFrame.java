@@ -24,6 +24,7 @@ public class MainFrame extends JFrame {
 
 
         HomepageView homepage = new HomepageView();
+        new HomepageController(this, homepage);
         contentPanel.add(homepage, "HOME");
 
         StudentView studentView = new StudentView();
